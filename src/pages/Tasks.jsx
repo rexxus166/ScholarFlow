@@ -2,7 +2,72 @@ import { useState } from 'react';
 import { useTasks } from '../contexts/TaskContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { generateId } from '../utils/storage';
-import { CheckCircle2, Circle, AlertCircle, Clock, Trash2, Plus } from 'lucide-react';
+import { CheckCircle2, Circle, AlertCircle, Clock, Trash2, Plus, ChevronRight } from 'lucide-react';
+import { motion, useMotionValue, useTransform, PanInfo } from 'framer-motion';
+import { toast } from 'react-toastify';
+
+const TaskItem = ({ task, onToggle, onDelete, t }) => {
+    const x = useMotionValue(0);
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    const handleDragEnd = (event, info) => {
+        if (info.offset.x < -80) {
+            // Swipe ke kiri lebih dari 80px → hapus
+            setIsDeleting(true);
+            setTimeout(() => {
+                onDelete(task.id);
+                toast.success(t('tasks.deleteSuccess'));
+            }, 300);
+        }
+    };
+
+    if (isDeleting) {
+        return null;
+    }
+
+    return (
+        <motion.div
+            className="relative overflow-hidden"
+            initial={{ x: 0 }}
+            animate={{ x }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.7}
+            onDragEnd={handleDragEnd}
+            style={{ x }}
+        >
+            {/* Background delete button */}
+            <motion.div
+                className="absolute inset-y-0 right-0 w-24 bg-red-500 rounded-2xl flex items-center justify-center"
+                initial={{ opacity: 0 }}
+                whileDrag={{ opacity: 1 }}
+                transition={{ opacity: { duration: 0.1 } }}
+            >
+                <Trash2 className="w-5 h-5 text-white" />
+            </motion.div>
+
+            {/* Task content */}
+            <div className={`flex items-start gap-3 p-3 rounded-2xl hover:bg-bg-main/50 transition-colors group bg-bg-card relative z-10`}>
+                <button 
+                    onClick={() => onToggle(task.id, !task.completed)} 
+                    className="mt-1 flex-shrink-0 text-text-muted hover:text-primary transition-colors"
+                    style={{ touchAction: 'none' }}
+                >
+                    {task.completed ? <CheckCircle2 className="w-5 h-5 text-green-500" /> : <Circle className="w-5 h-5" />}
+                </button>
+                <span className={`flex-1 text-sm ${task.completed ? 'line-through text-text-muted/60' : 'text-text-main'}`}>
+                    {task.text}
+                </span>
+                <button 
+                    onClick={() => onDelete(task.id)} 
+                    className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-red-500 transition-all flex-shrink-0"
+                >
+                    <Trash2 className="w-4 h-4" />
+                </button>
+            </div>
+        </motion.div>
+    );
+};
 
 const Quadrant = ({ title, description, tasks, colorClass, borderClass, icon: Icon, onToggle, onDelete, t }) => (
     <div className={`p-6 rounded-3xl border-2 ${borderClass} bg-bg-card shadow-sm flex flex-col h-[320px] md:h-full`}>
@@ -19,17 +84,13 @@ const Quadrant = ({ title, description, tasks, colorClass, borderClass, icon: Ic
                 </div>
             ) : (
                 tasks.map(task => (
-                    <div key={task.id} className="flex items-start gap-3 p-3 rounded-2xl hover:bg-bg-main/50 transition-colors group">
-                        <button onClick={() => onToggle(task.id, !task.completed)} className="mt-1 flex-shrink-0 text-text-muted hover:text-primary transition-colors">
-                            {task.completed ? <CheckCircle2 className="w-5 h-5 text-green-500" /> : <Circle className="w-5 h-5" />}
-                        </button>
-                        <span className={`flex-1 text-sm ${task.completed ? 'line-through text-text-muted/60' : 'text-text-main'}`}>
-                            {task.text}
-                        </span>
-                        <button onClick={() => onDelete(task.id)} className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-red-500 transition-all flex-shrink-0">
-                            <Trash2 className="w-4 h-4" />
-                        </button>
-                    </div>
+                    <TaskItem 
+                        key={task.id} 
+                        task={task} 
+                        onToggle={onToggle} 
+                        onDelete={onDelete}
+                        t={t}
+                    />
                 ))
             )}
         </div>

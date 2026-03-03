@@ -93,7 +93,7 @@ function Navigation() {
 function MainApp() {
   const { t } = useLanguage();
   return (
-    <div className="min-h-screen bg-bg-main text-text-main font-sans selection:bg-primary/30 flex flex-col pb-16 md:pb-0">
+    <div className="min-h-screen bg-bg-main text-text-main font-sans selection:bg-primary/30 flex flex-col pb-24 md:pb-0">
       <Navigation />
       <main className="container mx-auto px-4 py-8 flex-1">
         <Routes>
@@ -107,7 +107,7 @@ function MainApp() {
       </main>
       <ToastContainer position="bottom-right" theme="colored" hideProgressBar autoClose={3000} />
 
-      <footer className="border-t border-border/50 py-6 mt-8 shrink-0 mb-4 md:mb-0">
+      <footer className="border-t border-border/50 py-6 mt-8 shrink-0 mb-20 md:mb-0">
         <div className="container mx-auto px-4 text-center text-text-muted text-sm font-medium">
           {t('nav.built')}
         </div>
