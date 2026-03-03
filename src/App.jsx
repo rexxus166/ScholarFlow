@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Menu, X } from 'lucide-react';
+import { CheckSquare, Clock, FileText, Calendar, BarChart2 } from 'lucide-react';
 import { TaskProvider } from './contexts/TaskContext';
 import { NoteProvider } from './contexts/NoteContext';
 import { ScheduleProvider } from './contexts/ScheduleContext';
@@ -29,9 +29,35 @@ const NavLink = ({ to, children, onClick }) => {
   );
 };
 
+const MobileNavLink = ({ to, icon: Icon, label }) => {
+  const location = useLocation();
+  const isActive = location.pathname === to;
+  return (
+    <Link
+      to={to}
+      className={`flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors ${isActive ? 'text-primary' : 'text-text-muted hover:text-text-main'}`}
+    >
+      <Icon className={`w-5 h-5 ${isActive ? 'fill-primary/20 stroke-primary' : 'stroke-current'}`} />
+      <span className="text-[10px] font-bold">{label}</span>
+    </Link>
+  );
+};
+
+function MobileNavigation() {
+  const { t } = useLanguage();
+  return (
+    <div className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-bg-main/95 backdrop-blur-xl border-t border-border/50 flex justify-around items-center px-2 z-50">
+      <MobileNavLink to="/tasks" icon={CheckSquare} label={t('nav.tasks')} />
+      <MobileNavLink to="/focus" icon={Clock} label={t('nav.focus')} />
+      <MobileNavLink to="/notes" icon={FileText} label={t('nav.notes')} />
+      <MobileNavLink to="/schedule" icon={Calendar} label={t('nav.schedule')} />
+      <MobileNavLink to="/progress" icon={BarChart2} label={t('nav.progress')} />
+    </div>
+  );
+}
+
 function Navigation() {
   const { lang, toggleLang, t } = useLanguage();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <nav className="sticky top-0 z-50 backdrop-blur-xl bg-bg-main/80 border-b border-border/50">
@@ -58,24 +84,8 @@ function Navigation() {
             <span className="text-border/50">|</span>
             <span className={lang === 'id' ? 'text-primary' : ''}>ID</span>
           </button>
-
-          <button className="md:hidden p-2 text-text-muted hover:text-text-main" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
         </div>
       </div>
-
-      {isMenuOpen && (
-        <div className="md:hidden absolute top-16 left-0 right-0 bg-bg-main/95 backdrop-blur-xl border-b border-border/50 p-4 shadow-lg animate-in slide-in-from-top-2">
-          <div className="flex flex-col gap-2">
-            <NavLink to="/tasks" onClick={() => setIsMenuOpen(false)}>{t('nav.tasks')}</NavLink>
-            <NavLink to="/focus" onClick={() => setIsMenuOpen(false)}>{t('nav.focus')}</NavLink>
-            <NavLink to="/notes" onClick={() => setIsMenuOpen(false)}>{t('nav.notes')}</NavLink>
-            <NavLink to="/schedule" onClick={() => setIsMenuOpen(false)}>{t('nav.schedule')}</NavLink>
-            <NavLink to="/progress" onClick={() => setIsMenuOpen(false)}>{t('nav.progress')}</NavLink>
-          </div>
-        </div>
-      )}
     </nav>
   );
 }
@@ -83,7 +93,7 @@ function Navigation() {
 function MainApp() {
   const { t } = useLanguage();
   return (
-    <div className="min-h-screen bg-bg-main text-text-main font-sans selection:bg-primary/30 flex flex-col">
+    <div className="min-h-screen bg-bg-main text-text-main font-sans selection:bg-primary/30 flex flex-col pb-16 md:pb-0">
       <Navigation />
       <main className="container mx-auto px-4 py-8 flex-1">
         <Routes>
@@ -97,11 +107,12 @@ function MainApp() {
       </main>
       <ToastContainer position="bottom-right" theme="colored" hideProgressBar autoClose={3000} />
 
-      <footer className="border-t border-border/50 py-6 mt-8 shrink-0">
+      <footer className="border-t border-border/50 py-6 mt-8 shrink-0 mb-4 md:mb-0">
         <div className="container mx-auto px-4 text-center text-text-muted text-sm font-medium">
           {t('nav.built')}
         </div>
       </footer>
+      <MobileNavigation />
     </div>
   );
 }
