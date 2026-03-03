@@ -6,7 +6,7 @@ export const translations = {
     'nav.notes': 'Notes',
     'nav.schedule': 'Schedule',
     'nav.progress': 'Progress',
-    'nav.built': 'Built for WDC Atma Jaya Yogya • No Backend Required',
+    'nav.built': 'Built for WDC Atma Jaya Yogya • Poliwindra • No Backend Required',
 
     // Home
     'home.badge': 'AI-Integrated Study Architect',
@@ -114,7 +114,7 @@ export const translations = {
     'nav.notes': 'Catatan',
     'nav.schedule': 'Jadwal',
     'nav.progress': 'Progres',
-    'nav.built': 'Dibuat untuk WDC Atma Jaya Yogya • Tanpa Backend',
+    'nav.built': 'Dibuat untuk WDC Atma Jaya Yogya • Poliwindra • Tanpa Backend',
 
     // Home
     'home.badge': 'Arsitek Belajar Terintegrasi AI',
