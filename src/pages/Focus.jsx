@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Play, Pause, RotateCcw, Volume2, VolumeX, Settings2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const WORK_TIME = 25 * 60;
 const REST_TIME = 5 * 60;
@@ -13,6 +14,7 @@ const noises = [
 ];
 
 const Focus = () => {
+    const { t } = useLanguage();
     const [timeLeft, setTimeLeft] = useState(WORK_TIME);
     const [isActive, setIsActive] = useState(false);
     const [isWorkMode, setIsWorkMode] = useState(true);
@@ -58,8 +60,8 @@ const Focus = () => {
     return (
         <div className="max-w-4xl mx-auto animate-in fade-in duration-500 font-sans">
             <div className="text-center mb-12">
-                <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary mb-3">Deep Focus Zone</h1>
-                <p className="text-text-muted text-lg">Harness the Pomodoro technique to master your attention.</p>
+                <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary mb-3">{t('focus.title')}</h1>
+                <p className="text-text-muted text-lg">{t('focus.subtitle')}</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -72,13 +74,13 @@ const Focus = () => {
                             onClick={() => switchMode('work')}
                             className={`px-8 py-3 rounded-full font-bold transition-all ${isWorkMode ? 'bg-primary text-white shadow-md' : 'text-text-muted hover:text-text-main'}`}
                         >
-                            Focus
+                            {t('focus.btn.focus')}
                         </button>
                         <button
                             onClick={() => switchMode('break')}
                             className={`px-8 py-3 rounded-full font-bold transition-all ${!isWorkMode ? 'bg-secondary text-white shadow-md' : 'text-text-muted hover:text-text-main'}`}
                         >
-                            Break
+                            {t('focus.btn.break')}
                         </button>
                     </div>
 
@@ -110,7 +112,7 @@ const Focus = () => {
                                 {formatTime(timeLeft)}
                             </span>
                             <span className="text-text-muted font-medium mt-2 uppercase tracking-widest text-sm">
-                                {isWorkMode ? 'Deep Work' : 'Rest'}
+                                {isWorkMode ? t('focus.state.work') : t('focus.state.rest')}
                             </span>
                         </div>
                     </div>
@@ -138,7 +140,7 @@ const Focus = () => {
                             <div className="p-3 bg-primary/10 rounded-2xl text-primary">
                                 <Settings2 className="w-6 h-6" />
                             </div>
-                            <h3 className="text-2xl font-bold">Ambient</h3>
+                            <h3 className="text-2xl font-bold">{t('focus.ambient')}</h3>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4 mb-10">
@@ -156,7 +158,7 @@ const Focus = () => {
 
                     <div className="bg-bg-main/50 p-6 rounded-3xl border border-border/30 backdrop-blur-sm">
                         <div className="flex items-center justify-between mb-4">
-                            <span className="text-sm font-semibold text-text-muted uppercase tracking-wider">Volume</span>
+                            <span className="text-sm font-semibold text-text-muted uppercase tracking-wider">{t('focus.volume')}</span>
                             <button onClick={() => setIsMuted(!isMuted)} className="text-text-muted hover:text-primary transition-colors">
                                 {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
                             </button>
@@ -174,7 +176,7 @@ const Focus = () => {
                         />
                         {selectedNoise !== 'none' && (
                             <p className="text-xs text-text-muted/60 mt-4 text-center italic">
-                                *Playing static placeholder for {noises.find(n => n.id === selectedNoise)?.name}
+                                {t('focus.playing')} {noises.find(n => n.id === selectedNoise)?.name}
                             </p>
                         )}
                     </div>
