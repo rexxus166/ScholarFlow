@@ -37,10 +37,10 @@ const Notes = () => {
         .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 
     return (
-        <div className="max-w-7xl mx-auto h-[calc(100vh-10rem)] animate-in fade-in duration-500 font-sans flex gap-6">
+        <div className="max-w-7xl mx-auto h-[80vh] md:h-[calc(100vh-10rem)] animate-in fade-in duration-500 font-sans flex flex-col md:flex-row gap-6 mb-12">
 
             {/* Sidebar */}
-            <div className="w-80 bg-bg-card border border-border/50 rounded-3xl p-4 flex flex-col shadow-sm">
+            <div className="w-full md:w-80 h-[35%] md:h-full shrink-0 bg-bg-card border border-border/50 rounded-3xl p-4 flex flex-col shadow-sm">
                 <div className="flex items-center justify-between mb-6 px-2">
                     <h2 className="text-2xl font-bold flex items-center gap-2">
                         <FileText className="w-6 h-6 text-primary" />
@@ -88,7 +88,7 @@ const Notes = () => {
             </div>
 
             {/* Editor / View Area */}
-            <div className="flex-1 bg-bg-card border border-border/50 rounded-3xl p-8 flex flex-col shadow-sm overflow-hidden">
+            <div className="flex-1 bg-bg-card border border-border/50 rounded-3xl p-6 md:p-8 flex flex-col shadow-sm overflow-hidden h-[65%] md:h-full">
                 {activeNote ? (
                     <div className="h-full flex flex-col">
                         <div className="flex items-start justify-between mb-8 border-b border-border/50 pb-6">

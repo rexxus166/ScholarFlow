@@ -5,7 +5,7 @@ import { generateId } from '../utils/storage';
 import { CheckCircle2, Circle, AlertCircle, Clock, Trash2, Plus } from 'lucide-react';
 
 const Quadrant = ({ title, description, tasks, colorClass, borderClass, icon: Icon, onToggle, onDelete, t }) => (
-    <div className={`p-6 rounded-3xl border-2 ${borderClass} bg-bg-card shadow-sm flex flex-col h-full`}>
+    <div className={`p-6 rounded-3xl border-2 ${borderClass} bg-bg-card shadow-sm flex flex-col h-[320px] md:h-full`}>
         <div className={`flex items-center gap-2 mb-2 ${colorClass}`}>
             <Icon className="w-6 h-6" />
             <h3 className="text-xl font-bold">{title}</h3>
@@ -98,7 +98,7 @@ const Tasks = () => {
                 </form>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-[600px]">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:h-[600px] mb-12">
                 <Quadrant
                     title={t('tasks.q1.title')}
                     description={t('tasks.q1.desc')}

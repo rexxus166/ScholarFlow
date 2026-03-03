@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Menu, X } from 'lucide-react';
 import { TaskProvider } from './contexts/TaskContext';
 import { NoteProvider } from './contexts/NoteContext';
 import { ScheduleProvider } from './contexts/ScheduleContext';
@@ -13,13 +15,14 @@ import Notes from './pages/Notes';
 import Progress from './pages/Progress';
 import Timetable from './pages/Timetable';
 
-const NavLink = ({ to, children }) => {
+const NavLink = ({ to, children, onClick }) => {
   const location = useLocation();
   const isActive = location.pathname === to;
   return (
     <Link
       to={to}
-      className={`font-medium transition-all px-4 py-2 rounded-xl ${isActive ? 'bg-primary/10 text-primary font-bold' : 'text-text-muted hover:text-text-main hover:bg-bg-main'}`}
+      onClick={onClick}
+      className={`font-medium transition-all px-4 py-2 rounded-xl block w-full md:w-auto md:inline-block ${isActive ? 'bg-primary/10 text-primary font-bold' : 'text-text-muted hover:text-text-main hover:bg-bg-main'}`}
     >
       {children}
     </Link>
@@ -28,6 +31,7 @@ const NavLink = ({ to, children }) => {
 
 function Navigation() {
   const { lang, toggleLang, t } = useLanguage();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <nav className="sticky top-0 z-50 backdrop-blur-xl bg-bg-main/80 border-b border-border/50">
@@ -45,15 +49,33 @@ function Navigation() {
           </div>
         </div>
 
-        <button
-          onClick={toggleLang}
-          className="flex items-center gap-2 bg-bg-card border border-border/50 px-4 py-2 rounded-full font-bold text-sm text-text-muted hover:text-primary transition-colors shadow-sm"
-        >
-          <span className={lang === 'en' ? 'text-primary' : ''}>EN</span>
-          <span className="text-border/50">|</span>
-          <span className={lang === 'id' ? 'text-primary' : ''}>ID</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={toggleLang}
+            className="flex items-center gap-2 bg-bg-card border border-border/50 px-3 py-1.5 md:px-4 md:py-2 rounded-full font-bold text-sm text-text-muted hover:text-primary transition-colors shadow-sm"
+          >
+            <span className={lang === 'en' ? 'text-primary' : ''}>EN</span>
+            <span className="text-border/50">|</span>
+            <span className={lang === 'id' ? 'text-primary' : ''}>ID</span>
+          </button>
+
+          <button className="md:hidden p-2 text-text-muted hover:text-text-main" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </div>
+
+      {isMenuOpen && (
+        <div className="md:hidden absolute top-16 left-0 right-0 bg-bg-main/95 backdrop-blur-xl border-b border-border/50 p-4 shadow-lg animate-in slide-in-from-top-2">
+          <div className="flex flex-col gap-2">
+            <NavLink to="/tasks" onClick={() => setIsMenuOpen(false)}>{t('nav.tasks')}</NavLink>
+            <NavLink to="/focus" onClick={() => setIsMenuOpen(false)}>{t('nav.focus')}</NavLink>
+            <NavLink to="/notes" onClick={() => setIsMenuOpen(false)}>{t('nav.notes')}</NavLink>
+            <NavLink to="/schedule" onClick={() => setIsMenuOpen(false)}>{t('nav.schedule')}</NavLink>
+            <NavLink to="/progress" onClick={() => setIsMenuOpen(false)}>{t('nav.progress')}</NavLink>
+          </div>
+        </div>
+      )}
     </nav>
   );
 }
