@@ -16,24 +16,42 @@ const Progress = () => {
         const urgentImportant = tasks.filter(task => task.isUrgent && task.isImportant).length;
 
         const byQuadrant = [
-            { name: t('tasks.q1.title'), value: urgentImportant, fill: '#ef4444' },
+            { name: t('tasks.q1.title'), value: tasks.filter(task => task.isUrgent && task.isImportant).length, fill: '#ef4444' },
             { name: t('tasks.q2.title'), value: tasks.filter(task => !task.isUrgent && task.isImportant).length, fill: '#3b82f6' },
             { name: t('tasks.q3.title'), value: tasks.filter(task => task.isUrgent && !task.isImportant).length, fill: '#f59e0b' },
             { name: t('tasks.q4.title'), value: tasks.filter(task => !task.isUrgent && !task.isImportant).length, fill: '#9ca3af' },
         ];
 
-        // Mock progress over last 7 days (ideally this comes from completion history)
+        // Ambil histori nyata dari localStorage
+        const rawHistory = JSON.parse(localStorage.getItem('scholarflow_completion_history') || '[]');
+        const historyMap = {};
+        rawHistory.forEach(h => { historyMap[h.date] = h.count; });
+
+        // Ambil data jadwal untuk hitung jam belajar
+        const rawSchedule = JSON.parse(localStorage.getItem('scholarflow_schedule') || '[]');
+
+        // Buat data 7 hari terakhir dari data nyata
         const daysData = Array.from({ length: 7 }).map((_, i) => {
             const d = new Date();
             d.setDate(d.getDate() - (6 - i));
-            const dateStr = d.toLocaleDateString('en-US', { weekday: 'short' });
-            // Map en-US short days to translated versions for visual context
-            // Doing a very simple mock for demo purposes without heavy refactor
-            const randomCompletions = Math.floor(Math.random() * 5) + (i === 6 ? Math.floor(completed / 2) : 1);
+            const dateKey = d.toISOString().split('T')[0]; // YYYY-MM-DD
+            const dayName = d.toLocaleDateString('en-US', { weekday: 'short' });
+
+            // Hitung jam belajar dari schedule events berdasarkan hari (Senin/Selasa/dll)
+            const weekdayFull = d.toLocaleDateString('en-US', { weekday: 'long' }); // "Monday" dll
+            const studyEvents = rawSchedule.filter(
+                ev => ev.day === weekdayFull && (ev.type === 'study' || ev.type === 'class')
+            );
+            const studyHours = studyEvents.reduce((sum, ev) => {
+                const [sh, sm] = (ev.startTime || '00:00').split(':').map(Number);
+                const [eh, em] = (ev.endTime || '00:00').split(':').map(Number);
+                return sum + Math.max(0, (eh * 60 + em - sh * 60 - sm) / 60);
+            }, 0);
+
             return {
-                name: dateStr,
-                tasksDone: randomCompletions,
-                studyHours: (Math.random() * 4 + 1).toFixed(1)
+                name: dayName,
+                tasksDone: historyMap[dateKey] || 0,
+                studyHours: parseFloat(studyHours.toFixed(1))
             };
         });
 

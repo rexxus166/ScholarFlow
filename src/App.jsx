@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { CheckSquare, Clock, FileText, Calendar, BarChart2 } from 'lucide-react';
+import { CheckSquare, Clock, FileText, Calendar, BarChart2, Moon, Sun } from 'lucide-react';
 import { TaskProvider } from './contexts/TaskContext';
 import { NoteProvider } from './contexts/NoteContext';
 import { ScheduleProvider } from './contexts/ScheduleContext';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
+import SplashScreen from './components/SplashScreen';
 
 import Home from './pages/Home';
 import Tasks from './pages/Tasks';
@@ -15,6 +16,17 @@ import Notes from './pages/Notes';
 import Progress from './pages/Progress';
 import Timetable from './pages/Timetable';
 
+// Komponen scroll to top otomatis tiap ganti route
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+};
+
 const NavLink = ({ to, children, onClick }) => {
   const location = useLocation();
   const isActive = location.pathname === to;
@@ -22,7 +34,7 @@ const NavLink = ({ to, children, onClick }) => {
     <Link
       to={to}
       onClick={onClick}
-      className={`font-medium transition-all px-4 py-2 rounded-xl block w-full md:w-auto md:inline-block ${isActive ? 'bg-primary/10 text-primary font-bold' : 'text-text-muted hover:text-text-main hover:bg-bg-main'}`}
+      className={`font-semibold text-sm transition-all px-4 py-1.5 rounded-full block w-full lg:w-auto lg:inline-block ${isActive ? 'bg-primary text-white shadow-md shadow-primary/30' : 'text-text-muted hover:text-text-main hover:bg-border/50'}`}
     >
       {children}
     </Link>
@@ -45,8 +57,14 @@ const MobileNavLink = ({ to, icon: Icon, label }) => {
 
 function MobileNavigation() {
   const { t } = useLanguage();
+  const location = useLocation();
+  
+  // Sembunyikan bottom nav di landing page
+  if (location.pathname === '/') return null;
+
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-bg-main/95 backdrop-blur-xl border-t border-border/50 flex justify-around items-center px-2 z-50">
+    <div className="lg:hidden fixed bottom-0 left-0 right-0 h-16 bg-bg-main/95 backdrop-blur-xl border-t border-border/50 flex justify-around items-center px-2 z-50">
+
       <MobileNavLink to="/tasks" icon={CheckSquare} label={t('nav.tasks')} />
       <MobileNavLink to="/focus" icon={Clock} label={t('nav.focus')} />
       <MobileNavLink to="/notes" icon={FileText} label={t('nav.notes')} />
@@ -56,29 +74,48 @@ function MobileNavigation() {
   );
 }
 
-function Navigation() {
+function Navigation({ isDark, toggleDark }) {
   const { lang, toggleLang, t } = useLanguage();
+  const location = useLocation();
+  const isHome = location.pathname === '/';
 
   return (
     <nav className="sticky top-0 z-50 backdrop-blur-xl bg-bg-main/80 border-b border-border/50">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-8">
-          <Link to="/" className="text-2xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-primary via-indigo-500 to-secondary flex items-center gap-2 hover:opacity-80 transition-opacity">
-            ScholarFlow
-          </Link>
-          <div className="hidden md:flex items-center gap-2">
-            <NavLink to="/tasks">{t('nav.tasks')}</NavLink>
-            <NavLink to="/focus">{t('nav.focus')}</NavLink>
-            <NavLink to="/notes">{t('nav.notes')}</NavLink>
-            <NavLink to="/schedule">{t('nav.schedule')}</NavLink>
-            <NavLink to="/progress">{t('nav.progress')}</NavLink>
-          </div>
-        </div>
+      <div className="container mx-auto px-4 h-16 flex items-center justify-between relative">
+        
+        {/* Logo - Kiri */}
+        <Link to="/" className="text-2xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-primary via-indigo-500 to-secondary hover:opacity-80 transition-opacity">
+          ScholarFlow
+        </Link>
 
+        {/* Floating Pill Nav - Tengah (Desktop Only) - Sembunyikan di Home */}
+        {!isHome && (
+          <div className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center">
+            <div className="flex items-center p-1 bg-bg-card/40 backdrop-blur-md border border-border/50 rounded-full shadow-sm">
+              <NavLink to="/tasks">{t('nav.tasks')}</NavLink>
+              <NavLink to="/focus">{t('nav.focus')}</NavLink>
+              <NavLink to="/notes">{t('nav.notes')}</NavLink>
+              <NavLink to="/schedule">{t('nav.schedule')}</NavLink>
+              <NavLink to="/progress">{t('nav.progress')}</NavLink>
+            </div>
+          </div>
+        )}
+
+        {/* Actions - Kanan (Desktop & Mobile) */}
         <div className="flex items-center gap-2">
+          {/* Dark Mode */}
+          <button
+            onClick={toggleDark}
+            className="p-2 rounded-full bg-bg-card border border-border/50 text-text-muted hover:text-primary hover:border-primary/30 transition-all shadow-sm"
+            title={isDark ? 'Light Mode' : 'Dark Mode'}
+          >
+            {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          </button>
+
+          {/* Language Toggle */}
           <button
             onClick={toggleLang}
-            className="flex items-center gap-2 bg-bg-card border border-border/50 px-3 py-1.5 md:px-4 md:py-2 rounded-full font-bold text-sm text-text-muted hover:text-primary transition-colors shadow-sm"
+            className="flex items-center gap-1.5 bg-bg-card border border-border/50 px-3 py-1.5 rounded-full font-bold text-sm text-text-muted hover:text-primary transition-colors shadow-sm"
           >
             <span className={lang === 'en' ? 'text-primary' : ''}>EN</span>
             <span className="text-border/50">|</span>
@@ -90,11 +127,12 @@ function Navigation() {
   );
 }
 
-function MainApp() {
-  const { t } = useLanguage();
+function MainApp({ isDark, toggleDark }) {
+  const { t, lang, toggleLang } = useLanguage();
   return (
-    <div className="min-h-screen bg-bg-main text-text-main font-sans selection:bg-primary/30 flex flex-col pb-24 md:pb-0">
-      <Navigation />
+    <div className="min-h-screen bg-bg-main text-text-main font-sans selection:bg-primary/30 flex flex-col pb-24 lg:pb-0">
+      <ScrollToTop />
+      <Navigation isDark={isDark} toggleDark={toggleDark} />
       <main className="container mx-auto px-4 py-8 flex-1">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -105,9 +143,9 @@ function MainApp() {
           <Route path="/progress" element={<Progress />} />
         </Routes>
       </main>
-      <ToastContainer position="bottom-right" theme="colored" hideProgressBar autoClose={3000} />
+      <ToastContainer position="bottom-right" theme={isDark ? 'dark' : 'colored'} hideProgressBar autoClose={3000} />
 
-      <footer className="border-t border-border/50 py-6 mt-8 shrink-0 mb-20 md:mb-0">
+      <footer className="border-t border-border/50 py-6 mt-8 shrink-0 mb-20 lg:mb-0">
         <div className="container mx-auto px-4 text-center text-text-muted text-sm font-medium">
           {t('nav.built')}
         </div>
@@ -118,13 +156,41 @@ function MainApp() {
 }
 
 function App() {
+  const [isDark, setIsDark] = useState(() => {
+    const saved = localStorage.getItem('scholarflow_dark');
+    if (saved !== null) return JSON.parse(saved);
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
+
+  // Splash hanya sekali per sesi browser
+  const [showSplash, setShowSplash] = useState(
+    () => !sessionStorage.getItem('scholarflow_splashed')
+  );
+
+  useEffect(() => {
+    localStorage.setItem('scholarflow_dark', JSON.stringify(isDark));
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDark]);
+
+  const toggleDark = () => setIsDark(prev => !prev);
+
+  const handleSplashFinish = () => {
+    sessionStorage.setItem('scholarflow_splashed', '1');
+    setShowSplash(false);
+  };
+
   return (
     <LanguageProvider>
       <TaskProvider>
         <NoteProvider>
           <ScheduleProvider>
+            {showSplash && <SplashScreen onFinish={handleSplashFinish} />}
             <Router>
-              <MainApp />
+              <MainApp isDark={isDark} toggleDark={toggleDark} />
             </Router>
           </ScheduleProvider>
         </NoteProvider>
