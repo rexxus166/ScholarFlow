@@ -202,15 +202,8 @@ const ScheduleToday = () => {
             )}
 
             {/* Footer */}
-            <div className="mt-12 pt-8 border-t border-border/50 flex justify-between items-center">
-                <button
-                    onClick={() => navigate('/schedule')}
-                    className="flex items-center gap-2 text-text-muted hover:text-primary transition-colors font-semibold text-sm group"
-                >
-                    <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                    {t('schedule.title') || 'Full Schedule'}
-                </button>
-                <span className="text-xs text-text-muted/40">{totalHours}h scheduled today</span>
+            <div className="mt-12 pt-8 border-t border-border/50 text-center">
+                <span className="text-xs text-text-muted/40">{totalHours}h {t('schedule.today.scheduled') || 'scheduled today'}</span>
             </div>
         </motion.div>
     );

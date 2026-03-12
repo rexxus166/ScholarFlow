@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTasks } from '../contexts/TaskContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { generateId } from '../utils/storage';
-import { CheckCircle2, Circle, AlertCircle, Clock, Trash2, Plus, CalendarDays, Archive } from 'lucide-react';
+import { CheckCircle2, Circle, AlertCircle, Clock, Trash2, Plus, CalendarDays, Archive, GripVertical } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import { format, isPast, isToday, differenceInDays } from 'date-fns';
@@ -70,7 +70,7 @@ const TaskItem = ({ task, onToggle, onDelete, t, index }) => {
                             </div>
                             <button
                                 onClick={() => { onDelete(task.id); toast.success(t('tasks.deleteSuccess')); }}
-                                className={`opacity-0 group-hover:opacity-100 text-text-muted hover:text-red-500 transition-all flex-shrink-0 cursor-pointer ${snapshot.isDragging ? 'hidden' : ''}`}
+                                className={`text-text-muted/30 hover:text-red-500 active:text-red-600 active:scale-90 transition-all flex-shrink-0 cursor-pointer p-1 rounded-lg hover:bg-red-500/10 ${snapshot.isDragging ? 'hidden' : ''}`}
                             >
                                 <Trash2 className="w-4 h-4" />
                             </button>
@@ -224,51 +224,84 @@ const Tasks = () => {
             </div>
 
             {/* Add Task Form */}
-            <div className="bg-bg-card p-6 rounded-3xl shadow-sm border border-border/50 mb-8">
+            <div className="bg-bg-card p-6 rounded-3xl shadow-sm border border-border/50 mb-6">
                 <form onSubmit={handleAddTask}>
-                    <div className="flex flex-col md:flex-row gap-4 items-end">
+                    {/* Task input */}
+                    <div className="mb-4">
+                        <input
+                            type="text"
+                            value={newTask}
+                            onChange={(e) => setNewTask(e.target.value)}
+                            placeholder={t('tasks.placeholder')}
+                            className="w-full bg-bg-main border border-border/50 rounded-2xl px-4 py-3 text-text-main focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm"
+                        />
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-end">
+                        {/* Quadrant selector */}
                         <div className="flex-1 w-full">
-                            <label className="block text-sm font-medium text-text-muted mb-2">{t('tasks.new')}</label>
-                            <input
-                                type="text"
-                                value={newTask}
-                                onChange={(e) => setNewTask(e.target.value)}
-                                placeholder={t('tasks.placeholder')}
-                                className="w-full bg-bg-main border border-border/50 rounded-2xl px-4 py-3 text-text-main focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm"
-                            />
+                            <p className="text-xs font-semibold text-text-muted mb-2">{t('tasks.quadrant') || 'Category'}</p>
+                            <div className="grid grid-cols-2 gap-2">
+                                {[
+                                    { urgent: true,  important: true,  label: t('tasks.q1.title'), color: 'border-red-400 bg-red-500/10 text-red-600',     activeRing: 'ring-red-400'    },
+                                    { urgent: false, important: true,  label: t('tasks.q2.title'), color: 'border-blue-400 bg-blue-500/10 text-blue-600',    activeRing: 'ring-blue-400'   },
+                                    { urgent: true,  important: false, label: t('tasks.q3.title'), color: 'border-amber-400 bg-amber-500/10 text-amber-600', activeRing: 'ring-amber-400'  },
+                                    { urgent: false, important: false, label: t('tasks.q4.title'), color: 'border-gray-400 bg-gray-500/10 text-gray-500',    activeRing: 'ring-gray-400'   },
+                                ].map((q) => {
+                                    const active = isUrgent === q.urgent && isImportant === q.important;
+                                    return (
+                                        <button
+                                            key={`${q.urgent}-${q.important}`}
+                                            type="button"
+                                            onClick={() => { setIsUrgent(q.urgent); setIsImportant(q.important); }}
+                                            className={`text-left px-3 py-2 rounded-xl border text-xs font-bold transition-all ${q.color} ${active ? `ring-2 ${q.activeRing} scale-[1.03] shadow-sm` : 'opacity-50 hover:opacity-80'}`}
+                                        >
+                                            {q.label}
+                                        </button>
+                                    );
+                                })}
+                            </div>
                         </div>
-                        <div className="flex flex-wrap gap-3 w-full md:w-auto items-end">
-                            {/* Due Date */}
-                            <div className="flex flex-col gap-1">
-                                <label className="block text-xs font-medium text-text-muted">{t('tasks.dueDate')}</label>
+
+                        <div className="flex gap-2 w-full sm:w-auto">
+                            {/* Due date */}
+                            <div className="flex flex-col gap-1 flex-1 sm:flex-none">
+                                <p className="text-xs font-semibold text-text-muted">{t('tasks.dueDate')}</p>
                                 <input
                                     type="date"
                                     value={dueDate}
                                     onChange={(e) => setDueDate(e.target.value)}
                                     min={new Date().toISOString().split('T')[0]}
-                                    className="bg-bg-main border border-border/50 rounded-2xl px-3 py-3 text-text-main focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm"
+                                    className="bg-bg-main border border-border/50 rounded-2xl px-3 py-2.5 text-text-main focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm w-full"
                                 />
                             </div>
-                            {/* Checkboxes */}
-                            <label className="flex items-center gap-2 cursor-pointer bg-bg-main px-4 py-3 rounded-2xl border border-border/50 hover:border-primary/30 transition-colors">
-                                <input type="checkbox" checked={isUrgent} onChange={(e) => setIsUrgent(e.target.checked)} className="rounded w-4 h-4 accent-primary" />
-                                <span className="text-sm font-medium">{t('tasks.urgent')}</span>
-                            </label>
-                            <label className="flex items-center gap-2 cursor-pointer bg-bg-main px-4 py-3 rounded-2xl border border-border/50 hover:border-primary/30 transition-colors">
-                                <input type="checkbox" checked={isImportant} onChange={(e) => setIsImportant(e.target.checked)} className="rounded w-4 h-4 accent-primary" />
-                                <span className="text-sm font-medium">{t('tasks.important')}</span>
-                            </label>
-                            <button type="submit" className="bg-primary text-white p-3 rounded-2xl hover:bg-primary-hover transition-colors shadow-md flex items-center justify-center w-[50px] h-[50px]">
-                                <Plus className="w-5 h-5" />
-                            </button>
+
+                            {/* Submit */}
+                            <div className="flex flex-col justify-end">
+                                <button
+                                    type="submit"
+                                    className="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-2xl hover:bg-primary-hover transition-colors shadow-md font-bold text-sm whitespace-nowrap"
+                                >
+                                    <Plus className="w-4 h-4" />
+                                    <span className="hidden sm:inline">{t('tasks.add') || 'Add'}</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </form>
             </div>
 
+
+            {/* Drag hint */}
+            <div className="flex items-center justify-center gap-2 text-xs text-text-muted/50 mb-6 select-none">
+                <GripVertical className="w-3.5 h-3.5" />
+                <span>{t('tasks.dragHint') || 'Drag tasks between quadrants to reprioritize'}</span>
+                <GripVertical className="w-3.5 h-3.5" />
+            </div>
+
             {/* Quadrant Grid */}
             <DragDropContext onDragEnd={onDragEnd}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:h-[600px] mb-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                     <Quadrant
                         droppableId="q1"
                         title={t('tasks.q1.title')} description={t('tasks.q1.desc')}

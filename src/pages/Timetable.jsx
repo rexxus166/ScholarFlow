@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { useSchedule } from '../contexts/ScheduleContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { generateId } from '../utils/storage';
-import { Calendar as CalendarIcon, Clock, Plus, Trash2, MapPin, CalendarDays } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock, Plus, Trash2, MapPin, CalendarDays, GripVertical } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
@@ -111,7 +111,7 @@ const Timetable = () => {
             </div>
 
             {isAdding && (
-                <div className="bg-bg-card p-6 rounded-3xl border border-border/50 shadow-lg mb-8 animate-in slide-in-from-top-4 duration-300">
+                <div className="bg-bg-card p-6 rounded-3xl border border-border/50 shadow-lg mb-6 animate-in slide-in-from-top-4 duration-300">
                     <form onSubmit={handleAddEvent} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
                         <div className="lg:col-span-2">
                             <label className="block text-sm font-medium text-text-muted mb-2">{t('schedule.form.title')}</label>
@@ -182,6 +182,13 @@ const Timetable = () => {
                 </div>
             )}
 
+            {/* Drag hint */}
+            <div className="flex items-center justify-center gap-2 text-xs text-text-muted/50 mb-6 select-none">
+                <GripVertical className="w-3.5 h-3.5" />
+                <span>{t('schedule.dragHint') || 'Drag events between days to reschedule'}</span>
+                <GripVertical className="w-3.5 h-3.5" />
+            </div>
+
             {/* Timetable Grid */}
             <DragDropContext onDragEnd={onDragEnd}>
                 <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
@@ -220,7 +227,7 @@ const Timetable = () => {
                                                                 <div className={`p-4 rounded-2xl border ${typeInfo.color} relative group overflow-hidden transition-all ${snapshot.isDragging ? 'shadow-2xl ring-2 ring-primary border-transparent scale-105 bg-bg-card' : 'hover:shadow-md'}`}>
                                                                     <button
                                                                         onClick={() => deleteEvent(event.id)}
-                                                                        className={`absolute top-2 right-2 p-1.5 transition-opacity bg-bg-card/80 backdrop-blur-sm rounded-full text-red-500 hover:bg-red-500 hover:text-white ${snapshot.isDragging ? 'hidden' : 'opacity-0 group-hover:opacity-100'}`}
+                                                                        className={`absolute top-2 right-2 p-1.5 transition-all bg-bg-card/80 backdrop-blur-sm rounded-full text-red-400 hover:bg-red-500 hover:text-white active:scale-90 ${snapshot.isDragging ? 'hidden' : 'opacity-60 hover:opacity-100'}`}
                                                                     >
                                                                         <Trash2 className="w-3.5 h-3.5" />
                                                                     </button>

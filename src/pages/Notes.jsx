@@ -145,7 +145,7 @@ const Notes = () => {
                                         e.stopPropagation();
                                         deleteNote(note.id);
                                     }}
-                                    className="absolute top-3 right-3 p-1.5 opacity-0 group-hover:opacity-100 transition-all bg-bg-main border border-border/50 text-text-muted hover:bg-red-500 hover:text-white hover:border-red-500 rounded-xl shadow-sm"
+                                    className="absolute top-3 right-3 p-1.5 opacity-50 hover:opacity-100 transition-all bg-bg-main border border-border/50 text-text-muted hover:bg-red-500 hover:text-white hover:border-red-500 active:scale-90 rounded-xl shadow-sm"
                                     title={t('notes.tooltip.delete')}
                                 >
                                     <Trash2 className="w-3.5 h-3.5" />

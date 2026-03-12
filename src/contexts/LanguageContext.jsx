@@ -11,12 +11,12 @@ export const LanguageProvider = ({ children }) => {
         setStorage('scholarflow_lang', lang);
     }, [lang]);
 
-    const toggleLang = () => {
-        setLang(prevLang => {
-            if (prevLang === 'en') return 'id';
-            if (prevLang === 'id') return 'jv';
-            return 'en';
-        });
+    const toggleLang = (targetLang) => {
+        if (targetLang && ['en', 'id', 'jv'].includes(targetLang)) {
+            setLang(targetLang);
+        } else {
+            setLang(prev => prev === 'en' ? 'id' : prev === 'id' ? 'jv' : 'en');
+        }
     };
 
     const t = (key) => translations[lang][key] || key;

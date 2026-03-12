@@ -179,7 +179,7 @@ const TasksArchive = () => {
                                     </div>
 
                                     {/* Actions */}
-                                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all shrink-0">
+                                    <div className="flex items-center gap-2 shrink-0">
                                         {/* Restore */}
                                         <button
                                             onClick={() => updateTask(task.id, { completed: false })}

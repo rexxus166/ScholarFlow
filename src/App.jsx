@@ -119,16 +119,21 @@ function Navigation({ isDark, toggleDark }) {
           </button>
 
           {/* Language Toggle */}
-          <button
-            onClick={toggleLang}
-            className="flex items-center gap-1.5 bg-bg-card border border-border/50 px-3 py-1.5 rounded-full font-bold text-sm text-text-muted hover:text-primary transition-colors shadow-sm"
-          >
-            <span className={lang === 'en' ? 'text-primary' : ''}>EN</span>
-            <span className="text-border/50">|</span>
-            <span className={lang === 'id' ? 'text-primary' : ''}>ID</span>
-            <span className="text-border/50">|</span>
-            <span className={lang === 'jv' ? 'text-primary' : ''}>JV</span>
-          </button>
+          <div className="flex items-center bg-bg-card border border-border/50 rounded-full shadow-sm overflow-hidden">
+            {['en', 'id', 'jv'].map((l) => (
+              <button
+                key={l}
+                onClick={() => toggleLang(l)}
+                className={`px-3 py-1.5 text-xs font-black tracking-wider transition-all ${
+                  lang === l
+                    ? 'bg-primary text-white'
+                    : 'text-text-muted hover:text-primary hover:bg-border/30'
+                }`}
+              >
+                {l.toUpperCase()}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </nav>
@@ -156,10 +161,10 @@ function MainApp({ isDark, toggleDark }) {
       </main>
       <ToastContainer position="bottom-right" theme={isDark ? 'dark' : 'colored'} hideProgressBar autoClose={3000} />
 
-      <footer className="border-t border-border/50 py-6 mt-8 shrink-0 mb-20 lg:mb-0">
-        <div className="container mx-auto px-4 text-center text-text-muted text-sm font-medium">
+      <footer className="border-t border-border/30 py-4 mt-12 pb-24 lg:pb-4">
+        <p className="text-center text-text-muted/40 text-[11px] font-medium tracking-wide px-4">
           {t('nav.built')}
-        </div>
+        </p>
       </footer>
       <MobileNavigation />
     </div>

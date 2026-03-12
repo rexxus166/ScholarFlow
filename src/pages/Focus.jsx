@@ -6,113 +6,17 @@ import { getStorage, setStorage } from '../utils/storage';
 
 // Removed static WORK_TIME and REST_TIME constants as they are now dynamic
 
-// ── Web Audio API Generators ──────────────────────────────────────────────────
-function createRainAudio(ctx, gainNode) {
-    const bufferSize = ctx.sampleRate * 2;
-    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
-
-    const whiteNoise = ctx.createBufferSource();
-    whiteNoise.buffer = buffer;
-    whiteNoise.loop = true;
-
-    const lowpass = ctx.createBiquadFilter();
-    lowpass.type = 'lowpass';
-    lowpass.frequency.value = 1200;
-    lowpass.Q.value = 0.5;
-
-    const highpass = ctx.createBiquadFilter();
-    highpass.type = 'highpass';
-    highpass.frequency.value = 200;
-
-    whiteNoise.connect(highpass);
-    highpass.connect(lowpass);
-    lowpass.connect(gainNode);
-    whiteNoise.start();
-    return [whiteNoise];
-}
-
-function createCafeAudio(ctx, gainNode) {
-    const bufferSize = ctx.sampleRate * 2;
-    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
-    for (let i = 0; i < bufferSize; i++) {
-        const white = Math.random() * 2 - 1;
-        b0 = 0.99886 * b0 + white * 0.0555179;
-        b1 = 0.99332 * b1 + white * 0.0750759;
-        b2 = 0.96900 * b2 + white * 0.1538520;
-        b3 = 0.86650 * b3 + white * 0.3104856;
-        b4 = 0.55000 * b4 + white * 0.5329522;
-        b5 = -0.7616 * b5 - white * 0.0168980;
-        data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) / 7;
-        b6 = white * 0.115926;
-    }
-    const pink = ctx.createBufferSource();
-    pink.buffer = buffer;
-    pink.loop = true;
-    const bandpass = ctx.createBiquadFilter();
-    bandpass.type = 'bandpass';
-    bandpass.frequency.value = 600;
-    bandpass.Q.value = 0.3;
-    pink.connect(bandpass);
-    bandpass.connect(gainNode);
-    pink.start();
-
-    const nodes = [pink];
-    function scheduleClick() {
-        const delay = 1.5 + Math.random() * 4;
-        const osc = ctx.createOscillator();
-        const clickGain = ctx.createGain();
-        osc.frequency.value = 800 + Math.random() * 400;
-        osc.type = 'sine';
-        clickGain.gain.setValueAtTime(0.08, ctx.currentTime + delay);
-        clickGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.15);
-        osc.connect(clickGain);
-        clickGain.connect(gainNode);
-        osc.start(ctx.currentTime + delay);
-        osc.stop(ctx.currentTime + delay + 0.15);
-        nodes.push(osc);
-    }
-    for (let i = 0; i < 6; i++) scheduleClick();
-    return nodes;
-}
-
-function createLofiAudio(ctx, gainNode) {
-    const bufferSize = ctx.sampleRate * 4;
-    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) {
-        data[i] = (Math.random() * 2 - 1) * (Math.random() > 0.98 ? 0.6 : 0.04);
-    }
-    const crackle = ctx.createBufferSource();
-    crackle.buffer = buffer;
-    crackle.loop = true;
-    const lopass = ctx.createBiquadFilter();
-    lopass.type = 'lowpass';
-    lopass.frequency.value = 3000;
-    crackle.connect(lopass);
-    lopass.connect(gainNode);
-    crackle.start();
-
-    const osc = ctx.createOscillator();
-    const oscGain = ctx.createGain();
-    osc.type = 'sine';
-    osc.frequency.value = 55;
-    oscGain.gain.value = 0.04;
-    osc.connect(oscGain);
-    oscGain.connect(gainNode);
-    osc.start();
-    return [crackle, osc];
-}
-
-const GENERATORS = { rain: createRainAudio, cafe: createCafeAudio, lofi: createLofiAudio };
+// ── Real Audio Files ────────────────────────────────────────────────────────────
+const AUDIO_FILES = {
+    hujan: '/suara hujan petir.mp3',
+    hutan: '/suara hutan.mp3',
+    ombak: '/suara ombak.mp3'
+};
 
 const getNoises = (t) => [
-    { id: 'rain', name: t('focus.noise.rain') || 'Rain', emoji: '🌧️', color: 'bg-blue-500/10 hover:bg-blue-500/20 text-blue-500 border-blue-500/30' },
-    { id: 'cafe', name: t('focus.noise.cafe') || 'Cafe', emoji: '☕', color: 'bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border-amber-500/30' },
-    { id: 'lofi', name: t('focus.noise.lofi') || 'Lofi', emoji: '🎵', color: 'bg-purple-500/10 hover:bg-purple-500/20 text-purple-500 border-purple-500/30' },
+    { id: 'hujan', name: t('focus.noise.rain') || 'Hujan Petir', emoji: '⛈️', color: 'bg-blue-500/10 hover:bg-blue-500/20 text-blue-500 border-blue-500/30' },
+    { id: 'hutan', name: t('focus.noise.cafe') || 'Hutan', emoji: '🌳', color: 'bg-green-500/10 hover:bg-green-500/20 text-green-500 border-green-500/30' },
+    { id: 'ombak', name: t('focus.noise.lofi') || 'Ombak', emoji: '�', color: 'bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-500 border-cyan-500/30' },
     { id: 'none', name: t('focus.noise.none') || 'None', emoji: '🔇', color: 'bg-gray-500/10 hover:bg-gray-500/20 text-gray-500 border-gray-500/30' },
 ];
 
@@ -166,9 +70,7 @@ const Focus = () => {
         });
     };
 
-    const audioCtxRef = useRef(null);
-    const gainNodeRef = useRef(null);
-    const activeNodesRef = useRef([]);
+    const audioPlayerRef = useRef(null);
 
     // ── Timer ──────────────────────────────────────────────────────────────────
     useEffect(() => {
@@ -196,23 +98,23 @@ const Focus = () => {
 
     // ── Audio ──────────────────────────────────────────────────────────────────
     const stopAudio = () => {
-        activeNodesRef.current.forEach(node => { try { node.stop?.(); } catch {} });
-        activeNodesRef.current = [];
+        if (audioPlayerRef.current) {
+            audioPlayerRef.current.pause();
+        }
     };
 
     const startAudio = (noiseId) => {
         stopAudio();
-        if (noiseId === 'none' || !GENERATORS[noiseId]) return;
-        if (!audioCtxRef.current) {
-            audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
-            const gain = audioCtxRef.current.createGain();
-            gain.connect(audioCtxRef.current.destination);
-            gainNodeRef.current = gain;
+        if (noiseId === 'none' || !AUDIO_FILES[noiseId]) return;
+        
+        if (!audioPlayerRef.current) {
+            audioPlayerRef.current = new Audio();
+            audioPlayerRef.current.loop = true; // Otomatis mengulang / looping
         }
-        if (audioCtxRef.current.state === 'suspended') audioCtxRef.current.resume();
-        gainNodeRef.current.gain.value = isMuted ? 0 : volume / 100;
-        const nodes = GENERATORS[noiseId](audioCtxRef.current, gainNodeRef.current);
-        activeNodesRef.current = nodes;
+        
+        audioPlayerRef.current.src = AUDIO_FILES[noiseId];
+        audioPlayerRef.current.volume = isMuted ? 0 : volume / 100;
+        audioPlayerRef.current.play().catch(e => console.log("Audio play failed:", e));
     };
 
     const handleNoiseSelect = (id) => {
@@ -221,10 +123,19 @@ const Focus = () => {
     };
 
     useEffect(() => {
-        if (gainNodeRef.current) gainNodeRef.current.gain.value = isMuted ? 0 : volume / 100;
+        if (audioPlayerRef.current) {
+            audioPlayerRef.current.volume = isMuted ? 0 : volume / 100;
+        }
     }, [volume, isMuted]);
 
-    useEffect(() => () => { stopAudio(); audioCtxRef.current?.close(); }, []);
+    useEffect(() => {
+        return () => {
+            if (audioPlayerRef.current) {
+                audioPlayerRef.current.pause();
+                audioPlayerRef.current.src = "";
+            }
+        };
+    }, []);
 
     // ── Controls ───────────────────────────────────────────────────────────────
     const toggleTimer = () => {
