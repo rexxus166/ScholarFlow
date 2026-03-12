@@ -4,8 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../contexts/LanguageContext';
 import { getStorage, setStorage } from '../utils/storage';
 
-const WORK_TIME = 25 * 60;
-const REST_TIME = 5 * 60;
+// Removed static WORK_TIME and REST_TIME constants as they are now dynamic
 
 // ── Web Audio API Generators ──────────────────────────────────────────────────
 function createRainAudio(ctx, gainNode) {
@@ -110,11 +109,11 @@ function createLofiAudio(ctx, gainNode) {
 
 const GENERATORS = { rain: createRainAudio, cafe: createCafeAudio, lofi: createLofiAudio };
 
-const noises = [
-    { id: 'rain', name: 'Rain', emoji: '🌧️', color: 'bg-blue-500/10 hover:bg-blue-500/20 text-blue-500 border-blue-500/30' },
-    { id: 'cafe', name: 'Cafe', emoji: '☕', color: 'bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border-amber-500/30' },
-    { id: 'lofi', name: 'Lofi', emoji: '🎵', color: 'bg-purple-500/10 hover:bg-purple-500/20 text-purple-500 border-purple-500/30' },
-    { id: 'none', name: 'None', emoji: '🔇', color: 'bg-gray-500/10 hover:bg-gray-500/20 text-gray-500 border-gray-500/30' },
+const getNoises = (t) => [
+    { id: 'rain', name: t('focus.noise.rain') || 'Rain', emoji: '🌧️', color: 'bg-blue-500/10 hover:bg-blue-500/20 text-blue-500 border-blue-500/30' },
+    { id: 'cafe', name: t('focus.noise.cafe') || 'Cafe', emoji: '☕', color: 'bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border-amber-500/30' },
+    { id: 'lofi', name: t('focus.noise.lofi') || 'Lofi', emoji: '🎵', color: 'bg-purple-500/10 hover:bg-purple-500/20 text-purple-500 border-purple-500/30' },
+    { id: 'none', name: t('focus.noise.none') || 'None', emoji: '🔇', color: 'bg-gray-500/10 hover:bg-gray-500/20 text-gray-500 border-gray-500/30' },
 ];
 
 // ── Session dot indicator ─────────────────────────────────────────────────────
@@ -138,7 +137,11 @@ const SessionDots = ({ count, goal = 4 }) => (
 // ── Component ─────────────────────────────────────────────────────────────────
 const Focus = () => {
     const { t } = useLanguage();
-    const [timeLeft, setTimeLeft] = useState(WORK_TIME);
+    const [timeTemplate, setTimeTemplate] = useState(25); // 25 or 50
+    const workDuration = timeTemplate * 60;
+    const restDuration = (timeTemplate === 25 ? 5 : 10) * 60;
+
+    const [timeLeft, setTimeLeft] = useState(workDuration);
     const [isActive, setIsActive] = useState(false);
     const [isWorkMode, setIsWorkMode] = useState(true);
     const [selectedNoise, setSelectedNoise] = useState('none');
@@ -180,11 +183,11 @@ const Focus = () => {
                 setTimeout(() => setShowComplete(false), 3000);
             }
             setIsWorkMode(prev => !prev);
-            setTimeLeft(isWorkMode ? REST_TIME : WORK_TIME);
+            setTimeLeft(isWorkMode ? restDuration : workDuration);
             setIsActive(false);
             if ('Notification' in window && Notification.permission === 'granted') {
-                new Notification('ScholarFlow 🎯', {
-                    body: isWorkMode ? '🎉 Sesi selesai! Waktunya istirahat.' : '💪 Yuk fokus lagi!',
+                new Notification(t('focus.notif.title'), {
+                    body: isWorkMode ? t('focus.notif.work_done') : t('focus.notif.rest_done'),
                 });
             }
         }
@@ -230,10 +233,18 @@ const Focus = () => {
         }
         setIsActive(prev => !prev);
     };
-    const resetTimer = () => { setIsActive(false); setTimeLeft(isWorkMode ? WORK_TIME : REST_TIME); };
-    const switchMode = (mode) => { setIsWorkMode(mode === 'work'); setTimeLeft(mode === 'work' ? WORK_TIME : REST_TIME); setIsActive(false); };
+    const resetTimer = () => { setIsActive(false); setTimeLeft(isWorkMode ? workDuration : restDuration); };
+    const switchMode = (mode) => { setIsWorkMode(mode === 'work'); setTimeLeft(mode === 'work' ? workDuration : restDuration); setIsActive(false); };
+    
+    const handleTemplateChange = (mins) => {
+        setTimeTemplate(mins);
+        setIsActive(false);
+        if (isWorkMode) setTimeLeft(mins * 60);
+        else setTimeLeft((mins === 25 ? 5 : 10) * 60);
+    };
+
     const formatTime = (seconds) => `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
-    const progressPercentage = ((isWorkMode ? WORK_TIME : REST_TIME) - timeLeft) / (isWorkMode ? WORK_TIME : REST_TIME) * 100;
+    const progressPercentage = ((isWorkMode ? workDuration : restDuration) - timeLeft) / (isWorkMode ? workDuration : restDuration) * 100;
 
     return (
         <div className="max-w-4xl mx-auto animate-in fade-in duration-500 font-sans">
@@ -277,13 +288,23 @@ const Focus = () => {
                 <div className="md:col-span-2 bg-bg-card rounded-[3rem] p-10 shadow-sm border border-border/50 flex flex-col items-center justify-center relative overflow-hidden backdrop-blur-xl">
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none" />
 
-                    <div className="flex gap-4 mb-10 z-10 p-2 bg-bg-main/50 rounded-full border border-border/50 shadow-inner">
-                        <button onClick={() => switchMode('work')} className={`px-8 py-3 rounded-full font-bold transition-all ${isWorkMode ? 'bg-primary text-white shadow-md' : 'text-text-muted hover:text-text-main'}`}>
-                            {t('focus.btn.focus')}
-                        </button>
-                        <button onClick={() => switchMode('break')} className={`px-8 py-3 rounded-full font-bold transition-all ${!isWorkMode ? 'bg-secondary text-white shadow-md' : 'text-text-muted hover:text-text-main'}`}>
-                            {t('focus.btn.break')}
-                        </button>
+                    <div className="flex flex-col sm:flex-row gap-4 mb-8 z-10 items-center">
+                        <div className="flex p-2 bg-bg-main/50 rounded-full border border-border/50 shadow-inner">
+                            <button onClick={() => switchMode('work')} className={`px-6 py-2.5 sm:px-8 sm:py-3 rounded-full font-bold transition-all text-sm sm:text-base ${isWorkMode ? 'bg-primary text-white shadow-md' : 'text-text-muted hover:text-text-main'}`}>
+                                {t('focus.btn.focus')}
+                            </button>
+                            <button onClick={() => switchMode('break')} className={`px-6 py-2.5 sm:px-8 sm:py-3 rounded-full font-bold transition-all text-sm sm:text-base ${!isWorkMode ? 'bg-secondary text-white shadow-md' : 'text-text-muted hover:text-text-main'}`}>
+                                {t('focus.btn.break')}
+                            </button>
+                        </div>
+                        <div className="flex p-1.5 bg-bg-main/30 rounded-full border border-border/30 shadow-sm ml-0 sm:ml-4">
+                            <button onClick={() => handleTemplateChange(25)} className={`px-4 py-2 rounded-full font-bold transition-all text-xs ${timeTemplate === 25 ? 'bg-bg-card text-text-main shadow-sm border border-border/50' : 'text-text-muted hover:text-text-main'}`}>
+                                25 / 5
+                            </button>
+                            <button onClick={() => handleTemplateChange(50)} className={`px-4 py-2 rounded-full font-bold transition-all text-xs ${timeTemplate === 50 ? 'bg-bg-card text-text-main shadow-sm border border-border/50' : 'text-text-muted hover:text-text-main'}`}>
+                                50 / 10
+                            </button>
+                        </div>
                     </div>
 
                     <div className="relative w-72 h-72 flex items-center justify-center mb-12 z-10 group cursor-pointer" onClick={toggleTimer}>
@@ -336,11 +357,20 @@ const Focus = () => {
                         </div>
 
                         <div className="grid grid-cols-2 gap-4 mb-6">
-                            {noises.map((noise) => (
-                                <button key={noise.id} onClick={() => handleNoiseSelect(noise.id)}
-                                    className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-2 ${noise.color} ${selectedNoise === noise.id ? 'ring-2 ring-primary ring-offset-2 ring-offset-bg-card shadow-md scale-105' : 'opacity-70 hover:opacity-100 hover:scale-[1.02]'}`}>
-                                    <span className="text-2xl">{noise.emoji}</span>
-                                    <span className="font-bold text-sm tracking-wide">{noise.name}</span>
+                            {getNoises(t).map((n) => (
+                                <button
+                                    key={n.id}
+                                    onClick={() => handleNoiseSelect(n.id)}
+                                    className={`relative flex items-center justify-center gap-2 p-3 lg:p-4 rounded-xl font-bold uppercase tracking-widest text-xs border-2 transition-all ${selectedNoise === n.id
+                                        ? n.color
+                                        : 'border-transparent text-text-muted hover:bg-bg-card hover:border-border/50'
+                                        }`}
+                                >
+                                    <span className="text-xl lg:text-2xl">{n.emoji}</span>
+                                    <span className="hidden sm:inline-block">{n.name}</span>
+                                    {selectedNoise === n.id && (
+                                        <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-current animate-ping opacity-50" />
+                                    )}
                                 </button>
                             ))}
                         </div>
@@ -348,7 +378,7 @@ const Focus = () => {
                         <div className="min-h-[24px] text-center mb-4">
                             {selectedNoise !== 'none' ? (
                                 <p className="text-xs text-green-500/90 font-semibold animate-pulse">
-                                    🔊 {t('focus.playing')} {noises.find(n => n.id === selectedNoise)?.name}
+                                    🔊 {t('focus.playing')} {getNoises(t).find(n => n.id === selectedNoise)?.name}
                                 </p>
                             ) : (
                                 <p className="text-xs text-text-muted/50 italic">{t('focus.noSound')}</p>

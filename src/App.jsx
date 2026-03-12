@@ -11,10 +11,13 @@ import SplashScreen from './components/SplashScreen';
 
 import Home from './pages/Home';
 import Tasks from './pages/Tasks';
+import TasksArchive from './pages/TasksArchive';
 import Focus from './pages/Focus';
 import Notes from './pages/Notes';
+import NoteDetail from './pages/NoteDetail';
 import Progress from './pages/Progress';
 import Timetable from './pages/Timetable';
+import ScheduleToday from './pages/ScheduleToday';
 
 // Komponen scroll to top otomatis tiap ganti route
 const ScrollToTop = () => {
@@ -84,8 +87,11 @@ function Navigation({ isDark, toggleDark }) {
       <div className="container mx-auto px-4 h-16 flex items-center justify-between relative">
         
         {/* Logo - Kiri */}
-        <Link to="/" className="text-2xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-primary via-indigo-500 to-secondary hover:opacity-80 transition-opacity">
-          ScholarFlow
+        <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+          <img src="/logo.png" alt="ScholarFlow Logo" className="w-8 h-8 rounded-lg shadow-sm" />
+          <span className="text-2xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-primary via-indigo-500 to-secondary hidden sm:inline-block">
+            ScholarFlow
+          </span>
         </Link>
 
         {/* Floating Pill Nav - Tengah (Desktop Only) - Sembunyikan di Home */}
@@ -120,6 +126,8 @@ function Navigation({ isDark, toggleDark }) {
             <span className={lang === 'en' ? 'text-primary' : ''}>EN</span>
             <span className="text-border/50">|</span>
             <span className={lang === 'id' ? 'text-primary' : ''}>ID</span>
+            <span className="text-border/50">|</span>
+            <span className={lang === 'jv' ? 'text-primary' : ''}>JV</span>
           </button>
         </div>
       </div>
@@ -137,9 +145,12 @@ function MainApp({ isDark, toggleDark }) {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/tasks" element={<Tasks />} />
+          <Route path="/tasks/archive" element={<TasksArchive />} />
           <Route path="/focus" element={<Focus />} />
           <Route path="/notes" element={<Notes />} />
+          <Route path="/notes/:id" element={<NoteDetail />} />
           <Route path="/schedule" element={<Timetable />} />
+          <Route path="/schedule/today" element={<ScheduleToday />} />
           <Route path="/progress" element={<Progress />} />
         </Routes>
       </main>

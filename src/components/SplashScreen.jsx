@@ -66,18 +66,16 @@ const SplashScreen = ({ onFinish }) => {
                                 style={{ margin: '-10px', borderRadius: '28px' }}
                             />
 
-                            <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-primary via-indigo-600 to-secondary flex items-center justify-center shadow-2xl shadow-primary/40 relative overflow-hidden">
+                            <div className="w-24 h-24 rounded-3xl bg-bg-card flex items-center justify-center shadow-2xl shadow-primary/40 relative overflow-hidden">
                                 {/* Shine effect */}
                                 <motion.div
-                                    className="absolute inset-0 bg-gradient-to-br from-white/30 to-transparent"
+                                    className="absolute inset-0 bg-gradient-to-br from-white/30 to-transparent z-10"
                                     initial={{ x: '-100%', opacity: 0 }}
                                     animate={{ x: '200%', opacity: [0, 1, 0] }}
                                     transition={{ duration: 0.8, delay: 0.5, ease: 'easeInOut' }}
                                 />
-                                {/* SF Monogram */}
-                                <span className="text-white font-black text-4xl tracking-tighter select-none" style={{ fontFamily: 'system-ui' }}>
-                                    S
-                                </span>
+                                {/* Logo Image */}
+                                <img src="/logo.png" alt="ScholarFlow Logo" className="w-full h-full object-cover" />
                             </div>
                         </motion.div>
 

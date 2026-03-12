@@ -4,7 +4,20 @@ import { getStorage, setStorage } from '../utils/storage';
 const TaskContext = createContext();
 
 export const TaskProvider = ({ children }) => {
-    const [tasks, setTasks] = useState(() => getStorage('scholarflow_tasks', []));
+    const [tasks, setTasks] = useState(() => {
+        const stored = getStorage('scholarflow_tasks', null);
+        if (stored && stored.length > 4) return stored; // Trigger regenerasi
+
+        // Dummy data
+        const dummy = [
+            { id: 't1', text: 'Selesaikan revisi laporan KP', isUrgent: true, isImportant: true, dueDate: new Date().toISOString().split('T')[0], completed: false, createdAt: new Date().toISOString() },
+            { id: 't2', text: 'Submit dokumen beasiswa', isUrgent: true, isImportant: true, dueDate: new Date().toISOString().split('T')[0], completed: false, createdAt: new Date().toISOString() },
+            { id: 't3', text: 'Diskusi kelompok PBO', isUrgent: false, isImportant: true, dueDate: null, completed: false, createdAt: new Date().toISOString() },
+            { id: 't4', text: 'Bayar uang kas lab', isUrgent: true, isImportant: false, dueDate: null, completed: false, createdAt: new Date().toISOString() },
+            { id: 't5', text: 'Merapikan folder drive', isUrgent: false, isImportant: false, dueDate: null, completed: false, createdAt: new Date().toISOString() },
+        ];
+        return dummy;
+    });
     const [completionHistory, setCompletionHistory] = useState(() => getStorage('scholarflow_completion_history', []));
 
     useEffect(() => {

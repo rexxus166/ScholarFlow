@@ -2,11 +2,15 @@ import { useState, useMemo } from 'react';
 import { useSchedule } from '../contexts/ScheduleContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { generateId } from '../utils/storage';
-import { Calendar as CalendarIcon, Clock, Plus, Trash2, MapPin } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock, Plus, Trash2, MapPin, CalendarDays } from 'lucide-react';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const Timetable = () => {
-    const { schedule, addEvent, deleteEvent } = useSchedule();
+    const { schedule, addEvent, updateEvent, deleteEvent } = useSchedule();
     const { t } = useLanguage();
+    const navigate = useNavigate();
 
     const DAYS = [
         { id: 'Monday', label: t('schedule.days.Monday') },
@@ -68,6 +72,19 @@ const Timetable = () => {
         return grouped;
     }, [schedule, DAYS]);
 
+    const onDragEnd = (result) => {
+        const { source, destination, draggableId } = result;
+        if (!destination) return;
+        
+        if (source.droppableId === destination.droppableId) {
+            toast.info(t('schedule.drag.sameDay'));
+            return;
+        }
+
+        const destDay = destination.droppableId;
+        updateEvent(draggableId, { day: destDay });
+    };
+
     return (
         <div className="max-w-7xl mx-auto animate-in fade-in duration-500 font-sans">
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
@@ -76,12 +93,21 @@ const Timetable = () => {
                     <p className="text-text-muted text-lg">{t('schedule.subtitle')}</p>
                 </div>
 
-                <button
-                    onClick={() => setIsAdding(!isAdding)}
-                    className={`flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all shadow-md ${isAdding ? 'bg-bg-main text-text-main border border-border' : 'bg-primary text-white hover:bg-primary-hover hover:-translate-y-1'}`}
-                >
-                    {isAdding ? t('schedule.btn.cancel') : <><Plus className="w-5 h-5" /> {t('schedule.btn.add')}</>}
-                </button>
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={() => navigate('/schedule/today')}
+                        className="flex items-center gap-2 px-5 py-3 rounded-full font-bold transition-all shadow-sm bg-bg-card border border-border/50 text-text-muted hover:text-primary hover:border-primary/40 hover:-translate-y-1"
+                    >
+                        <CalendarDays className="w-4 h-4" />
+                        <span className="hidden sm:inline">{t('schedule.today.btn') || "Today"}</span>
+                    </button>
+                    <button
+                        onClick={() => setIsAdding(!isAdding)}
+                        className={`flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all shadow-md ${isAdding ? 'bg-bg-main text-text-main border border-border' : 'bg-primary text-white hover:bg-primary-hover hover:-translate-y-1'}`}
+                    >
+                        {isAdding ? t('schedule.btn.cancel') : <><Plus className="w-5 h-5" /> {t('schedule.btn.add')}</>}
+                    </button>
+                </div>
             </div>
 
             {isAdding && (
@@ -157,45 +183,70 @@ const Timetable = () => {
             )}
 
             {/* Timetable Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
-                {DAYS.map(day => (
-                    <div key={day.id} className="flex flex-col gap-4">
-                        <div className="bg-bg-card border-t-4 border-primary p-4 rounded-xl shadow-sm text-center font-bold text-text-main uppercase tracking-widest text-sm">
-                            {day.label}
-                        </div>
+            <DragDropContext onDragEnd={onDragEnd}>
+                <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
+                    {DAYS.map(day => (
+                        <div key={day.id} className="flex flex-col gap-4">
+                            <div className="bg-bg-card border-t-4 border-primary p-4 rounded-xl shadow-sm text-center font-bold text-text-main uppercase tracking-widest text-sm">
+                                {day.label}
+                            </div>
 
-                        <div className="flex-1 space-y-3">
-                            {scheduleByDay[day.id].length === 0 ? (
-                                <div className="text-center text-text-muted/40 italic py-6 text-sm border-2 border-dashed border-border/40 rounded-xl">
-                                    {t('schedule.free')}
-                                </div>
-                            ) : (
-                                scheduleByDay[day.id].map(event => {
-                                    const typeInfo = TYPES.find(t => t.id === event.type) || TYPES[3];
-                                    return (
-                                        <div key={event.id} className={`p-4 rounded-2xl border ${typeInfo.color} relative group overflow-hidden transition-all hover:shadow-md`}>
-                                            <button
-                                                onClick={() => deleteEvent(event.id)}
-                                                className="absolute top-2 right-2 p-1.5 opacity-0 group-hover:opacity-100 transition-opacity bg-bg-card/80 backdrop-blur-sm rounded-full text-red-500 hover:bg-red-500 hover:text-white"
-                                            >
-                                                <Trash2 className="w-3.5 h-3.5" />
-                                            </button>
-                                            <h4 className="font-bold text-sm mb-1 pr-6">{event.title}</h4>
-                                            <div className="flex items-center gap-1.5 text-xs font-semibold opacity-80 mb-2">
-                                                <Clock className="w-3.5 h-3.5" />
-                                                {event.startTime} - {event.endTime}
+                            <Droppable droppableId={day.id}>
+                                {(provided, snapshot) => (
+                                    <div
+                                        ref={provided.innerRef}
+                                        {...provided.droppableProps}
+                                        className={`flex-1 space-y-3 min-h-[150px] transition-colors rounded-xl ${snapshot.isDraggingOver ? 'bg-black/5 dark:bg-white/5 shadow-inner p-2 -mx-2' : ''}`}
+                                    >
+                                        {scheduleByDay[day.id].length === 0 && !snapshot.isDraggingOver ? (
+                                            <div className="text-center text-text-muted/40 italic py-6 text-sm border-2 border-dashed border-border/40 rounded-xl">
+                                                {t('schedule.free')}
                                             </div>
-                                            <div className="inline-block px-2 py-0.5 rounded text-[10px] uppercase font-black tracking-wider bg-black/5 dark:bg-white/10">
-                                                {typeInfo.label}
-                                            </div>
-                                        </div>
-                                    );
-                                })
-                            )}
+                                        ) : (
+                                            scheduleByDay[day.id].map((event, index) => {
+                                                const typeInfo = TYPES.find(t => t.id === event.type) || TYPES[3];
+                                                return (
+                                                    <Draggable key={event.id} draggableId={String(event.id)} index={index}>
+                                                        {(provided, snapshot) => (
+                                                            <div
+                                                                ref={provided.innerRef}
+                                                                {...provided.draggableProps}
+                                                                {...provided.dragHandleProps}
+                                                                style={{
+                                                                    ...provided.draggableProps.style,
+                                                                    opacity: snapshot.isDragging ? 0.9 : 1,
+                                                                }}
+                                                            >
+                                                                <div className={`p-4 rounded-2xl border ${typeInfo.color} relative group overflow-hidden transition-all ${snapshot.isDragging ? 'shadow-2xl ring-2 ring-primary border-transparent scale-105 bg-bg-card' : 'hover:shadow-md'}`}>
+                                                                    <button
+                                                                        onClick={() => deleteEvent(event.id)}
+                                                                        className={`absolute top-2 right-2 p-1.5 transition-opacity bg-bg-card/80 backdrop-blur-sm rounded-full text-red-500 hover:bg-red-500 hover:text-white ${snapshot.isDragging ? 'hidden' : 'opacity-0 group-hover:opacity-100'}`}
+                                                                    >
+                                                                        <Trash2 className="w-3.5 h-3.5" />
+                                                                    </button>
+                                                                    <h4 className="font-bold text-sm mb-1 pr-6 select-none">{event.title}</h4>
+                                                                    <div className="flex items-center gap-1.5 text-xs font-semibold opacity-80 mb-2 select-none">
+                                                                        <Clock className="w-3.5 h-3.5" />
+                                                                        {event.startTime} - {event.endTime}
+                                                                    </div>
+                                                                    <div className="inline-block px-2 py-0.5 rounded text-[10px] uppercase font-black tracking-wider bg-black/5 dark:bg-white/10 select-none">
+                                                                        {typeInfo.label}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </Draggable>
+                                                );
+                                            })
+                                        )}
+                                        {provided.placeholder}
+                                    </div>
+                                )}
+                            </Droppable>
                         </div>
-                    </div>
-                ))}
-            </div>
+                    ))}
+                </div>
+            </DragDropContext>
         </div>
     );
 };

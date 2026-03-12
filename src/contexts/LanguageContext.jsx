@@ -12,7 +12,11 @@ export const LanguageProvider = ({ children }) => {
     }, [lang]);
 
     const toggleLang = () => {
-        setLang(lang === 'en' ? 'id' : 'en');
+        setLang(prevLang => {
+            if (prevLang === 'en') return 'id';
+            if (prevLang === 'id') return 'jv';
+            return 'en';
+        });
     };
 
     const t = (key) => translations[lang][key] || key;
