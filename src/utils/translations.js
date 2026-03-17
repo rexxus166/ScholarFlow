@@ -6,7 +6,7 @@ export const translations = {
     'nav.notes': 'Notes',
     'nav.schedule': 'Schedule',
     'nav.progress': 'Progress',
-    'nav.built': 'Built for WDC Atma Jaya Yogya • Poliwindra • No Backend Required',
+    'nav.built': 'Built for WDC Atma Jaya Yogya • Anak Emas Poliwindra • No Backend Required',
 
     // Home (Landing Page)
     'home.badge': 'For Students • Offline • Free',
@@ -194,7 +194,7 @@ export const translations = {
     'nav.notes': 'Catatan',
     'nav.schedule': 'Jadwal',
     'nav.progress': 'Progres',
-    'nav.built': 'Dibuat untuk WDC Atma Jaya Yogya • Poliwindra • Tanpa Backend',
+    'nav.built': 'Dibuat untuk WDC Atma Jaya Yogya • Anak Emas Poliwindra • Tanpa Backend',
 
     // Home (Landing Page)
     'home.badge': 'Untuk Mahasiswa • Offline • Gratis',
@@ -382,7 +382,7 @@ export const translations = {
     'nav.notes': 'Seratan',
     'nav.schedule': 'Jadwal',
     'nav.progress': 'Progres',
-    'nav.built': 'Kadamêl kagem WDC Atma Jaya Yogya • Poliwindra • Mboten Betah Backend',
+    'nav.built': 'Kadamêl kagem WDC Atma Jaya Yogya • Anak Emas Poliwindra • Mboten Betah Backend',
 
     // Home (Landing Page)
     'home.badge': 'Kangge Mahasiswa • Offline • Gratis',

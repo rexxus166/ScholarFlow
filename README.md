@@ -3,7 +3,7 @@
 **Karya Web Development Competition (WDC) 2026 - Alat Produktivitas Mahasiswa**
 
 Nama Website : ScholarFlow
-Nama Tim: Poliwindra
+Nama Tim: Anak Emas Poliwindra
 Dengan Backend : TIDAK
 
 Daftar Fitur Utama:
