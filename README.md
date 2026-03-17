@@ -1,16 +1,26 @@
-# React + Vite
+# ScholarFlow
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Karya Web Development Competition (WDC) 2026 - Alat Produktivitas Mahasiswa**
 
-Currently, two official plugins are available:
+Nama Website : ScholarFlow
+Nama Tim: Poliwindra
+Dengan Backend : TIDAK
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Daftar Fitur Utama:
+1. **Prioritas Tugas (Smart Prioritization)**
+   Manajemen tugas berbasis Matriks Eisenhower interaktif dengan fitur *drag-and-drop*. Membantu mahasiswa memprioritaskan penyelesaian tugas (Mendesak & Penting) dan melacak tenggat waktu (*due date*). Memiliki fitur pengarsipan untuk tugas yang telah diselesaikan.
+2. **Zona Fokus Pembelajaran (Deep Focus Zone)**
+   Fitur manajemen waktu berdasar teknik Pomodoro (sesi 25/50 menit) yang dirancang untuk sesi belajar mendalam. Terintegrasi dengan *Ambient Audio* (Hujan, Hutan, Ombak) untuk memaksimalkan konsentrasi.
+3. **Pencatatan Materi (Seamless Notes)**
+   Editor catatan terintegrasi untuk menyimpan rangkuman akademik dengan dukungan *Markdown* bawaan yang di-render seketika (*real-time*). Dilengkapi indikasi penghitungan kata dan waktu baca.
+4. **Jadwal Kuliah & Belajar (Study Timetable)**
+   Penjadwal mingguan yang berfungsi mengelola kelas, watu belajar mandiri, dan tenggat ujian. Dilengkapi linimasa (*timeline*) agenda hari ini yang secara otomatis melacak berlangsungnya acara.
+5. **Analitik Produktivitas (Progress Analytics)**
+   Dasbor pantauan komprehensif yang memvisualisasikan tingkat progres tugas mahasiswa serta melacak durasi total waktu fokus sesi belajar selama seminggu terakhir.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+**Informasi Tambahan untuk Tim Penilai:**
+- **Inovasi Bebas Backend:** Aplikasi ini dibangun 100% *statis* di sisi *Frontend* (React.js / Vite) tanpa sistem *backend*, memanfaatkan arsitektur penyimpanan murni berbasis *Local Storage*. (Memenuhi Ketentuan B.5 & B.6).
+- **Trilingual Support:** Memiliki inovasi antarmuka yang mendukung transisi 3 bahasa (Inggris, Indonesia, dan aksen eksperimental Jawa Krama).
+- **Responsif:** Struktur *layout* telah didesain adaptif agar dapat diakses selaras dengan perangkat *Mobile*, *Tablet*, hingga *Desktop*.
