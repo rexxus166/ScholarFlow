@@ -44,7 +44,7 @@ const SplashScreen = ({ onFinish }) => {
                     className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-bg-main overflow-hidden"
                 >
                     {/* Background ambient blobs */}
-                    <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-gradient-to-br from-primary/20 via-indigo-500/10 to-secondary/15 rounded-full blur-3xl pointer-events-none" />
+                    <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-gradient-to-br from-primary/20 to-secondary/15 rounded-full blur-3xl pointer-events-none" />
                     <div className="absolute bottom-0 right-0 w-80 h-80 bg-secondary/10 rounded-full blur-3xl pointer-events-none" />
                     <div className="absolute top-0 left-0 w-60 h-60 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -86,7 +86,7 @@ const SplashScreen = ({ onFinish }) => {
                             transition={{ duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
                             className="text-center"
                         >
-                            <h1 className="text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-primary via-indigo-500 to-secondary mb-2">
+                            <h1 className="text-5xl font-black tracking-tight text-text-main mb-2">
                                 ScholarFlow
                             </h1>
                             <motion.p
@@ -109,7 +109,7 @@ const SplashScreen = ({ onFinish }) => {
                         >
                             {/* Fill: tumbuh dari kiri ke kanan */}
                             <div
-                                className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary via-indigo-500 to-secondary rounded-full transition-none"
+                                className="absolute inset-y-0 left-0 bg-primary rounded-full transition-none"
                                 style={{ width: `${progress}%` }}
                             />
                             {/* Shimmer */}

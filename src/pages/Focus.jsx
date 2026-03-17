@@ -160,7 +160,7 @@ const Focus = () => {
     return (
         <div className="max-w-4xl mx-auto animate-in fade-in duration-500 font-sans">
             <div className="text-center mb-8">
-                <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary mb-3">{t('focus.title')}</h1>
+                <h1 className="text-4xl font-extrabold text-text-main mb-3">{t('focus.title')}</h1>
                 <p className="text-text-muted text-lg">{t('focus.subtitle')}</p>
             </div>
 
@@ -229,7 +229,7 @@ const Focus = () => {
                                 transition={{ duration: 1, ease: "linear" }}
                             />
                         </svg>
-                        <div className="flex flex-col items-center justify-center bg-bg-main/80 backdrop-blur-sm rounded-full w-60 h-60 border-[8px] border-bg-card shadow-inner transition-transform group-hover:scale-[1.02]">
+                        <div className="flex flex-col items-center justify-center bg-transparent rounded-full w-60 h-60 transition-transform group-hover:scale-[1.02]">
                             <span className="text-7xl font-black text-text-main tracking-tighter" style={{ fontVariantNumeric: 'tabular-nums' }}>
                                 {formatTime(timeLeft)}
                             </span>
@@ -247,12 +247,12 @@ const Focus = () => {
                         </div>
                     </div>
 
-                    <div className="flex gap-6 z-10">
-                        <button onClick={toggleTimer} className={`p-6 rounded-full shadow-lg transition-transform hover:scale-105 active:scale-95 flex items-center justify-center ${isActive ? 'bg-bg-main text-text-main border-2 border-border' : (isWorkMode ? 'bg-primary text-white' : 'bg-secondary text-white')}`}>
-                            {isActive ? <Pause className="w-8 h-8 fill-current" /> : <Play className="w-8 h-8 fill-current ml-1" />}
+                    <div className="flex gap-4 z-10 -mt-6">
+                        <button onClick={toggleTimer} className={`p-4 rounded-full shadow-md transition-transform hover:scale-105 active:scale-95 flex items-center justify-center ${isActive ? 'bg-bg-main text-text-main border border-border' : 'bg-primary text-white'}`}>
+                            {isActive ? <Pause className="w-6 h-6 fill-current" /> : <Play className="w-6 h-6 fill-current ml-1" />}
                         </button>
-                        <button onClick={resetTimer} className="p-6 rounded-full bg-bg-main text-text-muted border-2 border-border/50 shadow-sm hover:border-border hover:text-text-main transition-all flex items-center justify-center">
-                            <RotateCcw className="w-8 h-8" />
+                        <button onClick={resetTimer} className="p-4 rounded-full bg-bg-main text-text-muted border border-border bg-opacity-50 shadow-sm hover:bg-bg-card hover:text-text-main transition-all flex items-center justify-center">
+                            <RotateCcw className="w-6 h-6" />
                         </button>
                     </div>
                 </div>

@@ -87,7 +87,7 @@ const ScheduleToday = () => {
 
             {/* Header */}
             <div className="mb-8">
-                <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary to-indigo-500 mb-2">
+                <h1 className="text-4xl font-extrabold text-text-main mb-2">
                     {t('schedule.today.title') || "Today's Agenda"}
                 </h1>
                 <p className="text-text-muted text-base">{todayLabel}</p>

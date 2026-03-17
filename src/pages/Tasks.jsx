@@ -54,7 +54,7 @@ const TaskItem = ({ task, onToggle, onDelete, t, index }) => {
                     }}
                     className="mb-3"
                 >
-                        <div className={`flex items-start gap-3 p-3 rounded-2xl transition-colors group relative z-10 ${snapshot.isDragging ? 'bg-bg-card shadow-2xl ring-2 ring-primary border border-transparent scale-105' : 'bg-bg-card hover:bg-bg-main/50'}`}>
+                        <div className={`flex items-start gap-3 p-3 rounded-2xl transition-all group relative z-10 ${snapshot.isDragging ? 'bg-bg-card shadow-2xl ring-2 ring-primary border border-transparent scale-105' : 'bg-bg-card border border-border/40 hover:border-border hover:shadow-sm'}`}>
                             <button
                                 onClick={() => onToggle(task.id, { completed: !task.completed })}
                                 className="mt-1 flex-shrink-0 text-text-muted hover:text-primary transition-colors cursor-pointer"
@@ -83,7 +83,7 @@ const TaskItem = ({ task, onToggle, onDelete, t, index }) => {
 
 // ── Quadrant card ─────────────────────────────────────────────────────────────
 const Quadrant = ({ title, description, tasks, colorClass, borderClass, icon: Icon, onToggle, onDelete, t, droppableId }) => (
-    <div className={`p-6 rounded-3xl border-2 ${borderClass} bg-bg-card shadow-sm flex flex-col h-[320px] md:h-full`}>
+    <div className={`p-6 rounded-3xl border ${borderClass} shadow-sm flex flex-col h-[320px] md:h-[400px]`}>
         <div className={`flex items-center gap-2 mb-2 ${colorClass}`}>
             <Icon className="w-6 h-6" />
             <h3 className="text-xl font-bold">{title}</h3>
@@ -243,10 +243,10 @@ const Tasks = () => {
                             <p className="text-xs font-semibold text-text-muted mb-2">{t('tasks.quadrant') || 'Category'}</p>
                             <div className="grid grid-cols-2 gap-2">
                                 {[
-                                    { urgent: true,  important: true,  label: t('tasks.q1.title'), color: 'border-red-400 bg-red-500/10 text-red-600',     activeRing: 'ring-red-400'    },
-                                    { urgent: false, important: true,  label: t('tasks.q2.title'), color: 'border-blue-400 bg-blue-500/10 text-blue-600',    activeRing: 'ring-blue-400'   },
-                                    { urgent: true,  important: false, label: t('tasks.q3.title'), color: 'border-amber-400 bg-amber-500/10 text-amber-600', activeRing: 'ring-amber-400'  },
-                                    { urgent: false, important: false, label: t('tasks.q4.title'), color: 'border-gray-400 bg-gray-500/10 text-gray-500',    activeRing: 'ring-gray-400'   },
+                                    { urgent: true,  important: true,  label: t('tasks.q1.title'), color: 'border-red-300 bg-red-50 text-red-600',     activeRing: 'ring-red-300'    },
+                                    { urgent: false, important: true,  label: t('tasks.q2.title'), color: 'border-emerald-300 bg-emerald-50 text-emerald-600',    activeRing: 'ring-emerald-300'   },
+                                    { urgent: true,  important: false, label: t('tasks.q3.title'), color: 'border-orange-300 bg-orange-50 text-orange-600', activeRing: 'ring-orange-300'  },
+                                    { urgent: false, important: false, label: t('tasks.q4.title'), color: 'border-purple-300 bg-purple-50 text-purple-600',    activeRing: 'ring-purple-300'   },
                                 ].map((q) => {
                                     const active = isUrgent === q.urgent && isImportant === q.important;
                                     return (
@@ -305,25 +305,25 @@ const Tasks = () => {
                     <Quadrant
                         droppableId="q1"
                         title={t('tasks.q1.title')} description={t('tasks.q1.desc')}
-                        icon={AlertCircle} colorClass="text-red-500" borderClass="border-red-500/20 hover:border-red-500/40"
+                        icon={AlertCircle} colorClass="text-red-500" borderClass="border-red-500/20 hover:border-red-500/40 bg-red-50/30"
                         tasks={urgentImportant} onToggle={updateTask} onDelete={deleteTask} t={t}
                     />
                     <Quadrant
                         droppableId="q2"
                         title={t('tasks.q2.title')} description={t('tasks.q2.desc')}
-                        icon={CheckCircle2} colorClass="text-blue-500" borderClass="border-blue-500/20 hover:border-blue-500/40"
+                        icon={CheckCircle2} colorClass="text-emerald-500" borderClass="border-emerald-500/20 hover:border-emerald-500/40 bg-emerald-50/30"
                         tasks={notUrgentImportant} onToggle={updateTask} onDelete={deleteTask} t={t}
                     />
                     <Quadrant
                         droppableId="q3"
                         title={t('tasks.q3.title')} description={t('tasks.q3.desc')}
-                        icon={Clock} colorClass="text-amber-500" borderClass="border-amber-500/20 hover:border-amber-500/40"
+                        icon={Clock} colorClass="text-orange-500" borderClass="border-orange-500/20 hover:border-orange-500/40 bg-orange-50/30"
                         tasks={urgentNotImportant} onToggle={updateTask} onDelete={deleteTask} t={t}
                     />
                     <Quadrant
                         droppableId="q4"
                         title={t('tasks.q4.title')} description={t('tasks.q4.desc')}
-                        icon={Trash2} colorClass="text-gray-400" borderClass="border-gray-500/20 hover:border-gray-500/40"
+                        icon={Trash2} colorClass="text-purple-500" borderClass="border-purple-500/20 hover:border-purple-500/40 bg-purple-50/30"
                         tasks={notUrgentNotImportant} onToggle={updateTask} onDelete={deleteTask} t={t}
                     />
                 </div>

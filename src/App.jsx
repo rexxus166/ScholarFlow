@@ -37,7 +37,7 @@ const NavLink = ({ to, children, onClick }) => {
     <Link
       to={to}
       onClick={onClick}
-      className={`font-semibold text-sm transition-all px-4 py-1.5 rounded-full block w-full lg:w-auto lg:inline-block ${isActive ? 'bg-primary text-white shadow-md shadow-primary/30' : 'text-text-muted hover:text-text-main hover:bg-border/50'}`}
+      className={`font-semibold text-sm transition-all px-5 py-2 rounded-full block w-full lg:w-auto lg:inline-block ${isActive ? 'bg-primary/10 text-primary' : 'text-text-muted hover:text-text-main hover:bg-bg-main'}`}
     >
       {children}
     </Link>
@@ -89,15 +89,15 @@ function Navigation({ isDark, toggleDark }) {
         {/* Logo - Kiri */}
         <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
           <img src="/logo.png" alt="ScholarFlow Logo" className="w-8 h-8 rounded-lg shadow-sm" />
-          <span className="text-2xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-primary via-indigo-500 to-secondary hidden sm:inline-block">
-            ScholarFlow
+          <span className="text-xl font-black tracking-tight text-primary hidden sm:inline-block">
+            ScholarFlow <span className="text-secondary/80 font-bold"></span>
           </span>
         </Link>
 
         {/* Floating Pill Nav - Tengah (Desktop Only) - Sembunyikan di Home */}
         {!isHome && (
           <div className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center">
-            <div className="flex items-center p-1 bg-bg-card/40 backdrop-blur-md border border-border/50 rounded-full shadow-sm">
+            <div className="flex items-center gap-1">
               <NavLink to="/tasks">{t('nav.tasks')}</NavLink>
               <NavLink to="/focus">{t('nav.focus')}</NavLink>
               <NavLink to="/notes">{t('nav.notes')}</NavLink>
@@ -143,7 +143,25 @@ function Navigation({ isDark, toggleDark }) {
 function MainApp({ isDark, toggleDark }) {
   const { t, lang, toggleLang } = useLanguage();
   return (
-    <div className="min-h-screen bg-bg-main text-text-main font-sans selection:bg-primary/30 flex flex-col pb-24 lg:pb-0">
+    <div className="min-h-screen bg-bg-main text-text-main font-sans selection:bg-primary/30 flex flex-col pb-24 lg:pb-0 relative">
+      
+      {/* ── Polished Background Layer ── */}
+      <div className="fixed inset-0 pointer-events-none -z-10 flex w-full h-full overflow-hidden">
+        {/* Soft Blobs */}
+        <div className="absolute -top-[20%] -left-[10%] w-[50vw] h-[50vw] bg-primary/10 rounded-full blur-[120px] mix-blend-multiply dark:mix-blend-screen opacity-70" />
+        <div className="absolute top-[60%] -right-[10%] w-[40vw] h-[40vw] bg-secondary/10 rounded-full blur-[100px] mix-blend-multiply dark:mix-blend-screen opacity-70" />
+        <div className="absolute top-[20%] left-[50%] w-[30vw] h-[30vw] bg-accent/5 rounded-full blur-[100px] mix-blend-multiply dark:mix-blend-screen opacity-50" />
+        
+        {/* Dot Pattern Texture */}
+        <div 
+          className="absolute inset-0 opacity-[0.03] dark:opacity-[0.06]"
+          style={{
+            backgroundImage: 'radial-gradient(var(--color-text-main) 1px, transparent 1px)',
+            backgroundSize: '24px 24px'
+          }}
+        />
+      </div>
+
       <ScrollToTop />
       <Navigation isDark={isDark} toggleDark={toggleDark} />
       <main className="container mx-auto px-4 py-8 flex-1">

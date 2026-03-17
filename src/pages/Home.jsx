@@ -83,7 +83,7 @@ const ScrollToTopBtn = () => {
 };
 
 // ── Live Stats from context ───────────────────────────────────────────────────
-const LiveStatCard = ({ value, label, color = 'from-primary to-indigo-500' }) => (
+const LiveStatCard = ({ value, label, color = 'from-primary to-secondary' }) => (
     <div className="flex flex-col items-center px-5 py-4 bg-bg-card/70 backdrop-blur-sm border border-border/50 rounded-2xl shadow-sm min-w-[90px]">
         <span className={`text-2xl font-black text-transparent bg-clip-text bg-gradient-to-br ${color}`}>{value}</span>
         <span className="text-[11px] text-text-muted font-semibold mt-1 text-center leading-tight">{label}</span>
@@ -141,75 +141,106 @@ const Home = () => {
             {/* ── HERO ──────────────────────────────────────────────────────── */}
             <section className="relative text-center pt-8 pb-16 overflow-hidden">
                 {/* Bg glow */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-gradient-to-b from-primary/10 via-indigo-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-gradient-to-b from-primary/10 to-transparent rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute top-20 left-10 w-48 h-48 bg-secondary/10 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute top-20 right-10 w-48 h-48 bg-accent/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute top-20 right-10 w-48 h-48 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
 
+                <div className="grid lg:grid-cols-2 gap-12 items-center text-left relative z-10">
+                    <motion.div
+                        initial={{ opacity: 0, x: -24 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                        {/* Headline */}
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary font-bold text-sm mb-6 border border-primary/20">
+                            ✨ Master your academic journey
+                        </div>
+                        <h1 className="text-5xl md:text-7xl font-extrabold leading-[1.1] tracking-tight mb-6">
+                            Elevate Your <br />
+                            <span className="text-primary">
+                                Learning
+                            </span> Flow
+                        </h1>
+
+                        <p className="text-lg md:text-xl text-text-muted max-w-lg mb-10 font-medium leading-relaxed">
+                            {t('home.subtitle')}
+                        </p>
+
+                        {/* CTA Buttons */}
+                        <div className="flex flex-col sm:flex-row gap-4 items-center mb-12 lg:mb-0">
+                            <Link
+                                to="/tasks"
+                                className="group flex items-center gap-2 px-8 py-4 bg-primary text-white rounded-full font-bold shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all transform hover:-translate-y-1"
+                            >
+                                Start Studying
+                            </Link>
+                            <Link
+                                to="/focus"
+                                className="flex items-center gap-2 px-8 py-4 text-text-main font-bold hover:text-primary transition-all group"
+                            >
+                                <div className="w-8 h-8 rounded-full bg-border flex items-center justify-center group-hover:bg-primary/20 group-hover:text-primary transition-colors">
+                                    <ArrowRight className="w-4 h-4 ml-0.5" />
+                                </div>
+                                How it works
+                            </Link>
+                        </div>
+                    </motion.div>
+
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                        className="relative"
+                    >
+                        <div className="absolute inset-0 bg-primary/5 rounded-[3rem] transform rotate-3 scale-105 -z-10" />
+                        <img src="/hero-illustration.png" alt="Student studying" className="w-full h-auto rounded-[2.5rem] shadow-2xl border border-border/50 object-cover aspect-[4/3]" />
+                    </motion.div>
+                </div>
+
+                {/* Styled Stat Cards matching Emerald Theme */}
                 <motion.div
                     initial={{ opacity: 0, y: 24 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                    className="relative z-10"
+                    transition={{ duration: 0.7, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                    className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20 relative z-10"
                 >
-
-
-                    {/* Headline */}
-                    <h1 className="text-5xl md:text-7xl font-extrabold leading-[1.1] tracking-tight mb-6 max-w-4xl mx-auto">
-                        <span className="text-transparent bg-clip-text bg-gradient-to-br from-primary via-indigo-500 to-secondary">
-                            {t('home.title1')}
-                        </span>
-                        <br />
-                        <span className="text-text-main">{t('home.title2')}</span>
-                    </h1>
-
-                    <p className="text-xl md:text-2xl text-text-muted max-w-2xl mx-auto mb-10 font-light leading-relaxed">
-                        {t('home.subtitle')}
-                    </p>
-
-                    {/* CTA Buttons */}
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-                        <Link
-                            to="/tasks"
-                            className="group flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary to-indigo-600 text-white rounded-2xl font-bold hover:shadow-xl hover:shadow-primary/30 transition-all transform hover:-translate-y-1 text-lg"
-                        >
-                            {t('home.cta1')}
-                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                        </Link>
-                        <Link
-                            to="/focus"
-                            className="flex items-center gap-2 px-8 py-4 bg-bg-card border-2 border-primary/30 text-primary rounded-2xl font-bold hover:border-primary hover:bg-primary/5 transition-all transform hover:-translate-y-1 text-lg"
-                        >
-                            {t('home.cta2')}
-                        </Link>
+                    <div className="bg-bg-card border border-border/50 rounded-[2rem] p-8 shadow-sm flex flex-col items-center justify-center hover:shadow-md transition-shadow">
+                        <div className="w-12 h-12 rounded-full bg-secondary/10 text-secondary flex items-center justify-center mb-4">
+                            <Clock className="w-6 h-6" />
+                        </div>
+                        <h3 className="text-4xl font-black text-text-main mb-1">{pendingTasks}</h3>
+                        <p className="text-text-muted font-semibold text-sm mb-4">
+                            {lang === 'jv' ? 'Ayahan Aktif' : lang === 'id' ? 'Tugas Aktif' : 'Active Tasks'}
+                        </p>
+                        <div className="px-3 py-1 bg-secondary/10 text-secondary text-xs font-bold rounded-full">
+                            ~ Keep Focus
+                        </div>
                     </div>
 
-                    {/* Live stats from actual data */}
-                    <div className="flex flex-wrap justify-center gap-3">
-                        <LiveStatCard
-                            value={pendingTasks}
-                            label={lang === 'jv' ? 'Ayahan Aktif' : lang === 'id' ? 'Tugas Aktif' : 'Active Tasks'}
-                            color="from-blue-500 to-indigo-500"
-                        />
-                        <LiveStatCard
-                            value={completedTasks}
-                            label={lang === 'jv' ? 'Ayahan Purna' : lang === 'id' ? 'Tugas Selesai' : 'Tasks Done'}
-                            color="from-green-500 to-emerald-500"
-                        />
-                        <LiveStatCard
-                            value={notes.length}
-                            label={lang === 'jv' ? 'Seratan' : lang === 'id' ? 'Catatan' : 'Notes'}
-                            color="from-teal-500 to-cyan-500"
-                        />
-                        <LiveStatCard
-                            value={todayEvents}
-                            label={lang === 'jv' ? 'Acara Dintên Menika' : lang === 'id' ? 'Jadwal Hari Ini' : "Today's Events"}
-                            color="from-purple-500 to-pink-500"
-                        />
-                        <LiveStatCard
-                            value="∞"
-                            label={lang === 'jv' ? 'Gratis Saklaminipun' : lang === 'id' ? 'Gratis Selamanya' : 'Free Forever'}
-                            color="from-primary to-secondary"
-                        />
+                    <div className="bg-primary border-none rounded-[2rem] p-8 shadow-xl shadow-primary/20 flex flex-col items-center justify-center transform md:-translate-y-4">
+                        <div className="w-12 h-12 rounded-full bg-white/20 text-white flex items-center justify-center mb-4">
+                            <CheckSquare className="w-6 h-6" />
+                        </div>
+                        <h3 className="text-4xl font-black text-white mb-1">{completedTasks}</h3>
+                        <p className="text-white/80 font-semibold text-sm mb-4">
+                            {lang === 'jv' ? 'Ayahan Purna' : lang === 'id' ? 'Tugas Selesai' : 'Tasks Done'}
+                        </p>
+                        <div className="px-3 py-1 bg-white/20 text-white flex items-center gap-1 text-xs font-bold rounded-full">
+                            <CheckSquare className="w-3 h-3" /> Peak Performance
+                        </div>
+                    </div>
+
+                    <div className="bg-bg-card border border-border/50 rounded-[2rem] p-8 shadow-sm flex flex-col items-center justify-center hover:shadow-md transition-shadow">
+                        <div className="w-12 h-12 rounded-full bg-teal-500/10 text-teal-600 flex items-center justify-center mb-4">
+                            <FileText className="w-6 h-6" />
+                        </div>
+                        <h3 className="text-4xl font-black text-text-main mb-1">{notes.length}</h3>
+                        <p className="text-text-muted font-semibold text-sm mb-4">
+                            {lang === 'jv' ? 'Seratan' : lang === 'id' ? 'Catatan' : 'Total Notes'}
+                        </p>
+                        <div className="px-3 py-1 bg-teal-500/10 text-teal-600 text-xs font-bold rounded-full flex items-center gap-1">
+                            <ArrowUp className="w-3 h-3" /> Growing Mind
+                        </div>
                     </div>
                 </motion.div>
             </section>
@@ -304,7 +335,7 @@ const Home = () => {
             {/* ── CTA BOTTOM ────────────────────────────────────────────────── */}
             <FadeUp>
                 <section className="pb-12">
-                    <div className="relative bg-gradient-to-br from-primary via-indigo-600 to-secondary rounded-3xl p-12 text-center text-white overflow-hidden shadow-2xl shadow-primary/30">
+                    <div className="relative bg-gradient-to-br from-primary to-secondary rounded-3xl p-12 text-center text-white overflow-hidden shadow-2xl shadow-primary/30">
                         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.15),transparent)] pointer-events-none" />
                         <div className="absolute -top-10 -left-10 w-40 h-40 bg-white/10 rounded-full blur-2xl" />
                         <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl" />

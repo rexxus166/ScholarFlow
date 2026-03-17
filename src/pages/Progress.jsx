@@ -16,10 +16,10 @@ const Progress = () => {
         const urgentImportant = tasks.filter(task => task.isUrgent && task.isImportant).length;
 
         const byQuadrant = [
-            { name: t('tasks.q1.title'), value: tasks.filter(task => task.isUrgent && task.isImportant).length, fill: '#ef4444' },
-            { name: t('tasks.q2.title'), value: tasks.filter(task => !task.isUrgent && task.isImportant).length, fill: '#3b82f6' },
-            { name: t('tasks.q3.title'), value: tasks.filter(task => task.isUrgent && !task.isImportant).length, fill: '#f59e0b' },
-            { name: t('tasks.q4.title'), value: tasks.filter(task => !task.isUrgent && !task.isImportant).length, fill: '#9ca3af' },
+            { name: t('tasks.q1.title'), value: tasks.filter(task => task.isUrgent && task.isImportant).length, fill: '#f87171' },
+            { name: t('tasks.q2.title'), value: tasks.filter(task => !task.isUrgent && task.isImportant).length, fill: '#34d399' },
+            { name: t('tasks.q3.title'), value: tasks.filter(task => task.isUrgent && !task.isImportant).length, fill: '#fb923c' },
+            { name: t('tasks.q4.title'), value: tasks.filter(task => !task.isUrgent && !task.isImportant).length, fill: '#c084fc' },
         ];
 
         // Ambil histori nyata dari localStorage
@@ -75,7 +75,7 @@ const Progress = () => {
         <div className="max-w-7xl mx-auto animate-in fade-in duration-500 font-sans">
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
                 <div>
-                    <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary to-indigo-500 mb-2">{t('progress.title')}</h1>
+                    <h1 className="text-4xl font-extrabold text-text-main mb-2">{t('progress.title')}</h1>
                     <p className="text-text-muted text-lg">{t('progress.subtitle')}</p>
                 </div>
 
@@ -108,21 +108,21 @@ const Progress = () => {
                             title={t('progress.card.total')}
                             value={stats.total}
                             icon={Target}
-                            colorClass="bg-blue-500/10 text-blue-500"
+                            colorClass="bg-primary/10 text-primary"
                             subtitle={t('progress.card.total.sub')}
                         />
                         <StatCard
                             title={t('progress.card.completed')}
                             value={stats.completed}
                             icon={CheckCircle}
-                            colorClass="bg-green-500/10 text-green-500"
+                            colorClass="bg-secondary/10 text-secondary"
                             subtitle={`${((stats.completed / (stats.total || 1)) * 100).toFixed(0)}${t('progress.card.completed.sub')}`}
                         />
                         <StatCard
                             title={t('progress.card.pending')}
                             value={stats.pending}
                             icon={Activity}
-                            colorClass="bg-amber-500/10 text-amber-500"
+                            colorClass="bg-accent/10 text-accent"
                             subtitle={t('progress.card.pending.sub')}
                         />
                         <StatCard

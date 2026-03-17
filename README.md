@@ -1,10 +1,13 @@
-# ScholarFlow
+# 🎓 ScholarFlow
+
+![Status](https://img.shields.io/badge/Status-Active-success)
+![Type](https://img.shields.io/badge/Type-Frontend_Only-blue)
+![Author](https://img.shields.io/badge/Author-Tim_Anak_Emas_Poliwindra-orange)
+![Event](https://img.shields.io/badge/Event-WDC_Atma_Jaya_Yogya-blueviolet)
 
 **Karya Web Development Competition (WDC) 2026 - Alat Produktivitas Mahasiswa**
 
-Nama Website : ScholarFlow
-Nama Tim: Anak Emas Poliwindra
-Dengan Backend : TIDAK
+Nama Website : ScholarFlow<br>Nama Tim: Anak Emas Poliwindra<br>Dengan Backend : TIDAK
 
 Daftar Fitur Utama:
 1. **Prioritas Tugas (Smart Prioritization)**

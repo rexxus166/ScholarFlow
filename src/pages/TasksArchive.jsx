@@ -71,7 +71,7 @@ const TasksArchive = () => {
 
             {/* Header */}
             <div className="mb-8">
-                <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-emerald-400 mb-2">
+                <h1 className="text-4xl font-extrabold text-text-main mb-2">
                     {t('tasks.archive.title') || 'Completed Tasks'}
                 </h1>
                 <p className="text-text-muted">{t('tasks.archive.subtitle') || 'All the tasks you have finished. Well done!'}</p>

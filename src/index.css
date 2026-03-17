@@ -1,27 +1,27 @@
 @import "tailwindcss";
 
 :root {
-  font-family: 'Poppins', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Plus Jakarta Sans', system-ui, Avenir, Helvetica, Arial, sans-serif;
 
-  /* ScholarFlow Brand Colors */
-  --color-primary: #4f46e5;
-  --color-primary-hover: #4338ca;
-  --color-secondary: #0ea5e9;
-  --color-accent: #f43f5e;
+  /* ScholarFlow Brand Colors - Emerald Theme */
+  --color-primary: #006D5B; /* Deep Teal */
+  --color-primary-hover: #005A4A;
+  --color-secondary: #0D846D; /* Medium Teal */
+  --color-accent: #E15B50;
 
-  --color-bg-main: #f8fafc;
+  --color-bg-main: #F4F7F6;
   --color-bg-card: #ffffff;
-  --color-text-main: #0f172a;
-  --color-text-muted: #64748b;
-  --color-border: #e2e8f0;
+  --color-text-main: #1A2E2A;
+  --color-text-muted: #6B7A77;
+  --color-border: #E0E8E6;
 }
 
 .dark {
-  --color-bg-main: #0f172a;
-  --color-bg-card: #1e293b;
-  --color-text-main: #f1f5f9;
-  --color-text-muted: #94a3b8;
-  --color-border: #334155;
+  --color-bg-main: #091210;
+  --color-bg-card: #121F1D;
+  --color-text-main: #E5F3EF;
+  --color-text-muted: #A3B5B1;
+  --color-border: #233834;
 }
 
 @theme {
@@ -41,4 +41,30 @@ body {
   background-color: var(--color-bg-main);
   color: var(--color-text-main);
   @apply transition-colors duration-200 antialiased;
+}
+
+/* ── Custom Scrollbar (Emerald Theme) ── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-main);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+  border: 2px solid var(--color-bg-main);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-secondary);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) var(--color-bg-main);
 }
